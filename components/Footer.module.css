@@ -1,0 +1,112 @@
+.footer {
+    background-color: var(--bg-secondary);
+    border-top: 1px solid var(--border-color);
+    padding: var(--spacing-3xl) 0 var(--spacing-md);
+    margin-top: auto;
+    /* Push to bottom */
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2xl);
+}
+
+.topSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-2xl);
+}
+
+@media (min-width: 768px) {
+    .topSection {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+.brand {
+    max-width: 300px;
+}
+
+.brand h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--spacing-sm);
+}
+
+.brand p {
+    color: var(--text-secondary);
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.linksGrid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--spacing-2xl);
+}
+
+.linkColumn h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-primary);
+}
+
+.linkColumn ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-sm);
+}
+
+.linkColumn a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    transition: var(--transition-fast);
+    font-size: 0.95rem;
+}
+
+.linkColumn a:hover {
+    color: var(--accent-primary);
+}
+
+.bottomSection {
+    border-top: 1px solid var(--border-color);
+    padding-top: var(--spacing-lg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--spacing-md);
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+}
+
+@media (min-width: 768px) {
+    .bottomSection {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}
+
+.socials {
+    display: flex;
+    gap: var(--spacing-md);
+}
+
+.socials a {
+    color: var(--text-secondary);
+    transition: var(--transition-fast);
+    font-weight: 600;
+}
+
+.socials a:hover {
+    color: var(--text-primary);
+}

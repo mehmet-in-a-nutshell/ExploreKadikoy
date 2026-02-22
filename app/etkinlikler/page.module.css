@@ -1,0 +1,116 @@
+.main {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 var(--spacing-md) var(--spacing-3xl);
+}
+
+.header {
+    padding: var(--spacing-2xl) 0 var(--spacing-xl);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.headerContent {
+    margin-bottom: var(--spacing-xl);
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: var(--spacing-xs);
+    letter-spacing: -0.02em;
+}
+
+.subtitle {
+    font-size: 1.15rem;
+    color: var(--text-secondary);
+}
+
+.filtersWrapper {
+    overflow-x: auto;
+    padding-bottom: var(--spacing-sm);
+    /* Hide scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.filtersWrapper::-webkit-scrollbar {
+    display: none;
+}
+
+.filtersScroll {
+    display: flex;
+    gap: var(--spacing-sm);
+    align-items: center;
+    min-width: max-content;
+}
+
+.filterBtn {
+    background: var(--bg-tertiary);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    padding: 0.5rem 1.25rem;
+    border-radius: var(--radius-full);
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.filterBtn:hover {
+    background: var(--border-color-hover);
+    color: var(--text-primary);
+}
+
+.filterBtn.active {
+    background: var(--text-primary);
+    color: var(--bg-primary);
+    font-weight: 600;
+}
+
+.divider {
+    width: 1px;
+    height: 24px;
+    background: var(--border-color);
+    margin: 0 var(--spacing-xs);
+}
+
+.results {
+    padding: var(--spacing-xl) 0;
+}
+
+.resultsInfo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-lg);
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+}
+
+.resultsInfo span {
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.select {
+    background: var(--bg-tertiary);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    outline: none;
+    cursor: pointer;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-xl);
+}
+
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.2rem;
+    }
+}
