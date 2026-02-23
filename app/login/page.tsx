@@ -3,11 +3,10 @@
 import { useState } from 'react';
 import { createClient } from '../../utils/supabase/client';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 export default function LoginPage() {
     const router = useRouter();
-    const [email, setEmail] = useState('');
+    const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
@@ -19,13 +18,21 @@ export default function LoginPage() {
         setLoading(true);
         setErrorMsg('');
 
+        // Hardcode the expected admin username
+        if (username.toLowerCase().trim() !== 'admin') {
+            setErrorMsg('Geçersiz kullanıcı adı veya şifre.');
+            setLoading(false);
+            return;
+        }
+
+        // Map 'admin' username to the actual Supabase auth email
         const { error } = await supabase.auth.signInWithPassword({
-            email,
+            email: 'admin@explorekadikoy.com',
             password,
         });
 
         if (error) {
-            setErrorMsg(error.message);
+            setErrorMsg('Geçersiz kullanıcı adı veya şifre.');
             setLoading(false);
         } else {
             router.push('/admin');
@@ -36,8 +43,8 @@ export default function LoginPage() {
     return (
         <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem' }}>
             <div style={{ width: '100%', maxWidth: '400px', backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '2.5rem', borderRadius: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(10px)' }}>
-                <h1 style={{ fontSize: '1.75rem', fontWeight: 'bold', marginBottom: '0.5rem', textAlign: 'center' }}>Giriş Yap</h1>
-                <p style={{ color: 'var(--text-secondary)', textAlign: 'center', marginBottom: '2rem' }}>Yönetim paneline erişmek için giriş yapın.</p>
+                <h1 style={{ fontSize: '1.75rem', fontWeight: 'bold', marginBottom: '0.5rem', textAlign: 'center' }}>Sistem Girişi</h1>
+                <p style={{ color: 'var(--text-secondary)', textAlign: 'center', marginBottom: '2rem' }}>İçerikleri yönetmek için yetkili girişi yapın.</p>
 
                 {errorMsg && (
                     <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#f87171', padding: '1rem', borderRadius: '0.5rem', marginBottom: '1.5rem', fontSize: '0.875rem' }}>
@@ -47,12 +54,12 @@ export default function LoginPage() {
 
                 <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>E-posta Adresi</label>
+                        <label style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Kullanıcı Adı</label>
                         <input
-                            type="email"
+                            type="text"
                             required
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                             style={{ padding: '0.875rem', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: 'rgba(0,0,0,0.2)', color: 'white', width: '100%' }}
                         />
                     </div>
@@ -74,10 +81,6 @@ export default function LoginPage() {
                         {loading ? 'Giriş yapılıyor...' : 'Giriş Yap'}
                     </button>
                 </form>
-
-                <p style={{ marginTop: '2rem', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.875rem' }}>
-                    Hesabınız yok mu? <Link href="/register" style={{ color: 'var(--accent-primary)', textDecoration: 'none', fontWeight: 500 }}>Hemen Üye Ol</Link>
-                </p>
             </div>
         </main>
     );

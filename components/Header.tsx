@@ -34,10 +34,7 @@ export default async function Header() {
                             </form>
                         </>
                     ) : (
-                        <>
-                            <Link href="/login" className={styles.navLink}>Giriş Yap</Link>
-                            <Link href="/register" className={styles.ctaBtn}>Üye Ol</Link>
-                        </>
+                        <Link href="/login" className={styles.ctaBtn}>Yönetici Girişi</Link>
                     )}
                 </div>
             </div>
