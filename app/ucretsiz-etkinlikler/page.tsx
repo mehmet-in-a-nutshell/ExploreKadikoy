@@ -6,11 +6,28 @@ export const metadata = {
     description: 'Kadıköy\'de katılabileceğiniz ücretsiz konser, atölye ve sergi etkinlikleri.',
 };
 
-export default function UcretsizPage() {
-    const events = [
-        { id: '1', title: 'Kadıköy Sokak Sanatı Turu', category: 'Tur', venue: 'Moda Sahili', time: '14:00', date: 'Bugün', isFree: true, slug: 'kadikoy-sokak-sanati-turu' },
-        { id: '4', title: 'Açık Mikrofon Stand-up', category: 'Stand-up', venue: 'Karga Bar', time: '20:30', date: 'Cuma', isFree: true, slug: 'acik-mikrofon-karga' },
-    ];
+import { supabase } from '../../utils/supabase';
+
+export const revalidate = 60; // Refresh cache every 60 seconds
+
+export default async function UcretsizPage() {
+    const { data: rawEvents } = await supabase.from('events').select(`
+        id, title, slug, date, time, is_free, cover_image, description,
+        venues:venue_id (name),
+        categories:category_id (name)
+    `).eq('is_free', true).order('created_at', { ascending: false });
+
+    const events = (rawEvents || []).map((e: any) => ({
+        id: e.id,
+        title: e.title,
+        slug: e.slug,
+        date: e.date,
+        time: e.time,
+        isFree: e.is_free,
+        imageUrl: e.cover_image,
+        venue: e.venues?.name || 'Kadıköy',
+        category: e.categories?.name || 'Diğer'
+    }));
 
     return (
         <main className={styles.main}>

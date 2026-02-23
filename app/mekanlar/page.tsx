@@ -6,14 +6,21 @@ export const metadata = {
     description: 'Kadıköy\'deki kafeler, barlar, performans sahneleri ve kültür merkezleri.',
 };
 
-export default function MekanlarPage() {
-    const venues = [
-        { id: 'v1', name: 'Müze Gazhane', neighborhood: 'Hasanpaşa', description: 'Tarihi havagazı fabrikasından dönüştürülen modern sanat, kültür ve yaşam alanı.', slug: 'muze-gazhane' },
-        { id: 'v2', name: 'Süreyya Operası', neighborhood: 'Bahariye', description: 'Kadıköy\'ün ikonik klasik müzik ve sahne sanatları merkezi.', slug: 'sureyya-operasi' },
-        { id: 'v3', name: 'Dorock XL', neighborhood: 'Kadikoy Merkez', description: 'Anadolu yakasının en popüler canlı performans ve rock müzik mekanı.', slug: 'dorock-xl' },
-        { id: 'v4', name: 'Moda Sahnesi', neighborhood: 'Moda', description: 'Alternatif tiyatro oyunlarına ve bağımsız sinemaya ev sahipliği yapan kültür merkezi.', slug: 'moda-sahnesi' },
-        { id: 'v5', name: 'Fahri Konsolos', neighborhood: 'Moda', description: 'İmza kokteylleri ve şık ambiyansıyla Kadıköy akşamlarının vazgeçilmezi.', slug: 'fahri-konsolos' },
-    ];
+import { supabase } from '../../utils/supabase';
+
+export const revalidate = 60; // Refresh cache every 60 seconds
+
+export default async function MekanlarPage() {
+    const { data: rawVenues } = await supabase.from('venues').select('*').order('created_at', { ascending: false });
+
+    const venues = (rawVenues || []).map((v: any) => ({
+        id: v.id,
+        name: v.name,
+        neighborhood: v.neighborhood || 'Kadıköy',
+        description: v.description || '',
+        slug: v.slug,
+        imageUrl: v.cover_image
+    }));
 
     return (
         <main className={styles.main}>

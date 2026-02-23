@@ -6,11 +6,30 @@ export const metadata = {
     description: 'Moda Sahnesi, Baba Sahne, Oyun Atölyesi ve daha fazlasındaki güncel tiyatro oyunları.',
 };
 
-export default function TiyatroPage() {
-    const events = [
-        { id: '6', title: 'Moda Sahnesi: Hamlet', category: 'Tiyatro', venue: 'Moda Sahnesi', time: '20:00', date: 'Pazar', isFree: false, slug: 'hamlet-moda-sahnesi' },
-        { id: '9', title: 'Bir Baba Hamlet', category: 'Tiyatro', venue: 'Baba Sahne', time: '20:30', date: 'Cuma', isFree: false, slug: 'bir-baba-hamlet' },
-    ];
+import { supabase } from '../../utils/supabase';
+
+export const revalidate = 60; // Refresh cache every 60 seconds
+
+export default async function TiyatroPage() {
+    const { data: rawEvents } = await supabase.from('events').select(`
+        id, title, slug, date, time, is_free, cover_image, description,
+        venues:venue_id (name),
+        categories:category_id (name)
+    `).order('created_at', { ascending: false });
+
+    const events = (rawEvents || [])
+        .filter((e: any) => e.categories?.slug === 'tiyatro' || e.categories?.name === 'Tiyatro')
+        .map((e: any) => ({
+            id: e.id,
+            title: e.title,
+            slug: e.slug,
+            date: e.date,
+            time: e.time,
+            isFree: e.is_free,
+            imageUrl: e.cover_image,
+            venue: e.venues?.name || 'Kadıköy',
+            category: e.categories?.name || 'Tiyatro'
+        }));
 
     return (
         <main className={styles.main}>
