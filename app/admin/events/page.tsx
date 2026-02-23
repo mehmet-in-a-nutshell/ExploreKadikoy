@@ -1,9 +1,10 @@
-import { supabase } from '../../../utils/supabase';
+import { createClient } from '../../../utils/supabase/server';
 import Link from 'next/link';
 
 export const revalidate = 0; // Always fetch fresh data in admin
 
 export default async function AdminEventsList() {
+    const supabase = await createClient();
     const { data: rawEvents } = await supabase.from('events').select(`
     id, title, date, time, is_free,
     venues:venue_id (name)

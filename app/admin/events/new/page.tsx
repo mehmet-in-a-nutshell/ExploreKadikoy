@@ -1,14 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { supabase } from '../../../../utils/supabase';
-import { useRouter } from 'next/navigation';
+import { createClient } from '../../../../utils/supabase/client';
+import { useRouter }
+    from 'next/navigation';
 
 export default function NewEventPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
     const [venues, setVenues] = useState<any[]>([]);
+
+    const supabase = createClient();
 
     const [formData, setFormData] = useState({
         title: '',

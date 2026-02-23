@@ -1,9 +1,10 @@
-import { supabase } from '../../../utils/supabase';
+import { createClient } from '../../../utils/supabase/server';
 import Link from 'next/link';
 
 export const revalidate = 0; // Always fetch fresh data in admin
 
 export default async function AdminVenuesList() {
+    const supabase = await createClient();
     const { data: rawVenues } = await supabase.from('venues').select('*').order('created_at', { ascending: false });
 
     return (
