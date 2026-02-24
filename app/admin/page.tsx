@@ -1,4 +1,20 @@
-export default function AdminDashboard() {
+import { createClient } from '../../utils/supabase/server';
+
+export const revalidate = 0; // Always fetch fresh data in admin dashboard
+
+export default async function AdminDashboard() {
+    const supabase = await createClient();
+
+    // Fetch total events
+    const { count: eventsCount } = await supabase
+        .from('events')
+        .select('*', { count: 'exact', head: true });
+
+    // Fetch total venues
+    const { count: venuesCount } = await supabase
+        .from('venues')
+        .select('*', { count: 'exact', head: true });
+
     return (
         <div>
             <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem', color: 'white' }}>ExploreKadikoy Yönetim Paneli</h1>
@@ -8,11 +24,11 @@ export default function AdminDashboard() {
                 {/* Quick Stats Cards */}
                 <div style={{ backgroundColor: '#18181b', padding: '1.5rem', borderRadius: '0.75rem', border: '1px solid #27272a' }}>
                     <h3 style={{ color: '#e4e4e7', marginBottom: '0.5rem' }}>Toplam Etkinlik</h3>
-                    <p style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>--</p>
+                    <p style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>{eventsCount || 0}</p>
                 </div>
                 <div style={{ backgroundColor: '#18181b', padding: '1.5rem', borderRadius: '0.75rem', border: '1px solid #27272a' }}>
                     <h3 style={{ color: '#e4e4e7', marginBottom: '0.5rem' }}>Kayıtlı Mekan</h3>
-                    <p style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>--</p>
+                    <p style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>{venuesCount || 0}</p>
                 </div>
             </div>
         </div>
