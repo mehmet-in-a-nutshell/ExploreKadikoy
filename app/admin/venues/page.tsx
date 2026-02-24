@@ -25,6 +25,7 @@ export default async function AdminVenuesList() {
                         <tr style={{ backgroundColor: '#27272a', borderBottom: '1px solid #3f3f46' }}>
                             <th style={{ padding: '1rem', fontWeight: 600 }}>Mekan Adı</th>
                             <th style={{ padding: '1rem', fontWeight: 600 }}>Semt (Mahalle)</th>
+                            <th style={{ padding: '1rem', fontWeight: 600 }}>Puan</th>
                             <th style={{ padding: '1rem', fontWeight: 600, textAlign: 'right' }}>İşlemler</th>
                         </tr>
                     </thead>
@@ -33,6 +34,7 @@ export default async function AdminVenuesList() {
                             <tr key={venue.id} style={{ borderBottom: '1px solid #27272a' }}>
                                 <td style={{ padding: '1rem', fontWeight: 500 }}>{venue.name}</td>
                                 <td style={{ padding: '1rem', color: '#a1a1aa' }}>{venue.neighborhood || '-'}</td>
+                                <td style={{ padding: '1rem', color: '#fbbf24', fontWeight: 500 }}>{venue.rating ? `⭐ ${venue.rating}` : <span style={{ color: '#71717a' }}>-</span>}</td>
                                 <td style={{ padding: '1rem', textAlign: 'right' }}>
                                     <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
                                         <Link href={`/admin/venues/edit/${venue.id}`} style={{ color: '#3b82f6', textDecoration: 'none', fontSize: '0.875rem' }}>Düzenle</Link>
@@ -44,7 +46,7 @@ export default async function AdminVenuesList() {
 
                         {rawVenues?.length === 0 && (
                             <tr>
-                                <td colSpan={3} style={{ padding: '2rem', textAlign: 'center', color: '#71717a' }}>
+                                <td colSpan={4} style={{ padding: '2rem', textAlign: 'center', color: '#71717a' }}>
                                     Henüz hiç mekan eklenmemiş.
                                 </td>
                             </tr>
