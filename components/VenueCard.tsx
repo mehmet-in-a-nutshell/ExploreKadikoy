@@ -19,7 +19,7 @@ export default function VenueCard({
     slug,
 }: VenueCardProps) {
     return (
-        <Link href={`/mekanlar/${slug}`} className={`${styles.card} glass`}>
+        <Link href={`/mekan/${slug}`} className={`${styles.card} glass`}>
             <div className={styles.imageHolder}>
                 {imageUrl ? (
                     <img src={imageUrl} alt={name} className={styles.image} loading="lazy" />
