@@ -16,7 +16,8 @@ export default function NewVenuePage() {
         neighborhood: '',
         description: '',
         cover_image: '',
-        rating: ''
+        rating: '',
+        google_maps_url: ''
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -80,6 +81,11 @@ export default function NewVenuePage() {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                         <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Değerlendirme Puanı (1.0 - 5.0)</label>
                         <input name="rating" type="number" min="1" max="5" step="0.1" value={formData.rating} onChange={handleChange} placeholder="Örn: 4.5" style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white' }} />
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Google Maps Yerleştirme Kodu (İsteğe Bağlı)</label>
+                        <input name="google_maps_url" value={formData.google_maps_url} onChange={handleChange} placeholder='<iframe src="https://www.google.com/maps/embed?..." ></iframe>' style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white' }} />
                     </div>
                 </div>
 

@@ -20,7 +20,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         .from('events')
         .select(`
             *,
-            venues:venue_id (name, slug, neighborhood),
+            venues:venue_id (name, slug, neighborhood, google_maps_url),
             categories:category_id (name, slug)
         `)
         .eq('slug', slug)
@@ -89,6 +89,19 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                     <p style={{ color: '#71717a', fontStyle: 'italic' }}>Bu etkinlik için henüz detaylı bir açıklama girilmemiş.</p>
                 )}
             </div>
+
+            {/* Google Maps Embed Section (from Venue) */}
+            {event.venues?.google_maps_url && event.venues.google_maps_url.includes('<iframe') && (
+                <div style={{ marginTop: '4rem' }}>
+                    <h3 style={{ fontSize: '1.25rem', color: 'white', marginBottom: '1.5rem', fontWeight: 600 }}>Lokasyon</h3>
+                    <div style={{ borderRadius: '1rem', overflow: 'hidden', border: '1px solid #27272a' }}>
+                        <div
+                            style={{ width: '100%', height: '350px' }}
+                            dangerouslySetInnerHTML={{ __html: event.venues.google_maps_url.replace(/width="[^"]*"/, 'width="100%"').replace(/height="[^"]*"/, 'height="100%"') }}
+                        />
+                    </div>
+                </div>
+            )}
 
             {/* Admin Edit Button */}
             {isAdmin && (

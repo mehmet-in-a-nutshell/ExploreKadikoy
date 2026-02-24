@@ -95,13 +95,23 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
                 </div>
             </div>
 
-            {/* Venue Rating at the Bottom */}
+            {/* Venue Rating Section */}
             {venue.rating && (
                 <div style={{ marginTop: '3rem', padding: '2rem', backgroundColor: '#18181b', borderRadius: '1rem', border: '1px solid #27272a', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
                     <h3 style={{ color: 'white', fontSize: '1.25rem', fontWeight: 600, margin: 0 }}>Mekan Değerlendirmesi</h3>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fbbf24', fontSize: '2rem', fontWeight: 'bold' }}>
                         {'⭐'.repeat(Math.round(venue.rating))} <span style={{ color: '#a1a1aa', fontSize: '1.25rem', marginLeft: '0.5rem' }}>{venue.rating} / 5.0</span>
                     </div>
+                </div>
+            )}
+
+            {/* Google Maps Embed Section */}
+            {venue.google_maps_url && venue.google_maps_url.includes('<iframe') && (
+                <div style={{ marginTop: '3rem', borderRadius: '1rem', overflow: 'hidden', border: '1px solid #27272a' }}>
+                    <div
+                        style={{ width: '100%', height: '400px' }}
+                        dangerouslySetInnerHTML={{ __html: venue.google_maps_url.replace(/width="[^"]*"/, 'width="100%"').replace(/height="[^"]*"/, 'height="100%"') }}
+                    />
                 </div>
             )}
 
