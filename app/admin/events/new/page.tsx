@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import { createClient } from '../../../../utils/supabase/client';
-import { useRouter }
-    from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { tr } from 'date-fns/locale';
+import { format, parseISO } from 'date-fns';
 
 export default function NewEventPage() {
     const router = useRouter();
@@ -104,8 +107,17 @@ export default function NewEventPage() {
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Tarih (Örn: Bugün, Yarın, 26 Ekim) *</label>
-                        <input required name="date" value={formData.date} onChange={handleChange} style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white' }} />
+                        <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Tarih *</label>
+                        <DatePicker
+                            selected={formData.date ? new Date(formData.date) : null}
+                            onChange={(date: Date | null) => setFormData(prev => ({ ...prev, date: date ? format(date, 'yyyy-MM-dd') : '' }))}
+                            dateFormat="dd MMMM yyyy"
+                            locale={tr}
+                            placeholderText="Takvimden seçin"
+                            className="date-picker-input"
+                            wrapperClassName="date-picker-wrapper"
+                            required
+                        />
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
