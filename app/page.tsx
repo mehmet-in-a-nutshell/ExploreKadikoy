@@ -37,11 +37,16 @@ export default async function Home() {
     imageUrl: v.cover_image
   }));
 
-  // Simple mock for guides since we haven't created guides table yet
-  const featuredGuides = [
-    { id: 'g1', title: 'Kadıköy Kahve Rehberi: En İyi 10 Mekan', excerpt: 'Moda\'dan Yeldeğirmeni\'ne Kadıköy\'ün en iyi 3., nesil kahvecilerini sizin için derledik.', readTime: '5', slug: 'kadikoy-kahve-rehberi' },
-    { id: 'g2', title: 'Yağmurlu Günde Kadıköy\'de Ne Yapılır?', excerpt: 'Havalar soğudu diye eve kapanmak yok! Kapalı mekanlarda keşfetmeniz gereken 7 harika aktivite.', readTime: '3', slug: 'yagmurlu-gunde-kadikoy' }
-  ];
+  // Fetch top 2 guides
+  const { data: rawGuides } = await supabase.from('guides').select('*').order('created_at', { ascending: false }).limit(2);
+  const featuredGuides = (rawGuides || []).map((g: any) => ({
+    id: g.id,
+    title: g.title,
+    excerpt: g.excerpt,
+    readTime: g.read_time,
+    slug: g.slug,
+    imageUrl: g.cover_image
+  }));
 
   return (
     <main className={styles.main}>

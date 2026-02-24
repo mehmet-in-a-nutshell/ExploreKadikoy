@@ -1,17 +1,27 @@
 import GuideCard from '../../components/GuideCard';
 import styles from '../etkinlikler/page.module.css';
+import { supabase } from '../../utils/supabase';
+
+export const revalidate = 60; // Refresh cache every 60 seconds
 
 export const metadata = {
     title: 'Kadıköy Keşif Rehberi - ExploreKadikoy',
     description: 'Kadıköy\'ü bir lokal gibi yaşayın. Rotalar, yeme-içme listeleri ve gizli noktalar.',
 };
 
-export default function RehberPage() {
-    const guides = [
-        { id: 'g1', title: 'Kadıköy Kahve Rehberi: En İyi 10 Mekan', excerpt: 'Moda\'dan Yeldeğirmeni\'ne Kadıköy\'ün en iyi 3., nesil kahvecilerini sizin için derledik.', readTime: '5', slug: 'kadikoy-kahve-rehberi' },
-        { id: 'g2', title: 'Yağmurlu Günde Kadıköy\'de Ne Yapılır?', excerpt: 'Havalar soğudu diye eve kapanmak yok! Kapalı mekanlarda keşfetmeniz gereken 7 harika aktivite.', readTime: '3', slug: 'yagmurlu-gunde-kadikoy' },
-        { id: 'g3', title: 'Moda Sahili Yürüyüş Rotası', excerpt: 'Yoğurtçu Parkı\'ndan başlayıp Kalamış\'a uzanan en keyifli yürüyüş ve mola durakları.', readTime: '4', slug: 'moda-sahili-rota' },
-    ];
+export default async function RehberPage() {
+    // Fetch guides from Supabase
+    const { data: rawGuides } = await supabase.from('guides').select('*').order('created_at', { ascending: false });
+
+    // Format data for the component
+    const guides = (rawGuides || []).map((guide: any) => ({
+        id: guide.id,
+        title: guide.title,
+        slug: guide.slug,
+        excerpt: guide.excerpt,
+        readTime: guide.read_time,
+        imageUrl: guide.cover_image,
+    }));
 
     return (
         <main className={styles.main}>
@@ -27,11 +37,13 @@ export default function RehberPage() {
                     <p><span>{guides.length} keşif rehberi</span> bulundu</p>
                 </div>
 
-                {/* We use a different layout for guides, maybe similar to the 2 cols on homepage */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))', gap: '2rem' }}>
                     {guides.map((guide) => (
                         <GuideCard key={guide.id} {...guide} />
                     ))}
+                    {guides.length === 0 && (
+                        <p style={{ color: 'var(--text-secondary)' }}>Henüz rehber eklenmemiş.</p>
+                    )}
                 </div>
             </section>
         </main>

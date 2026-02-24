@@ -24,6 +24,9 @@ export default function AdminLayout({
                     <Link href="/admin/venues" style={{ padding: '0.75rem 1rem', borderRadius: '0.5rem', color: '#e4e4e7', textDecoration: 'none', transition: 'background-color 0.2s' }}>
                         Mekanlar
                     </Link>
+                    <Link href="/admin/guides" style={{ padding: '0.75rem 1rem', borderRadius: '0.5rem', color: '#e4e4e7', textDecoration: 'none', transition: 'background-color 0.2s' }}>
+                        Rehberler
+                    </Link>
                     <a href="/" target="_blank" style={{ marginTop: 'auto', padding: '0.75rem 1rem', color: '#6366f1', textDecoration: 'none', fontSize: '0.875rem' }}>
                         Siteye Dön ↗
                     </a>
