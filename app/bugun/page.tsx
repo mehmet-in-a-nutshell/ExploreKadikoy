@@ -9,15 +9,16 @@ export const metadata = {
 import { supabase } from '../../utils/supabase';
 
 export const revalidate = 60; // Refresh cache every 60 seconds
-import { format } from 'date-fns';
+import { format, addDays } from 'date-fns';
 
 export default async function BugunPage() {
     const today = format(new Date(), 'yyyy-MM-dd');
+    const twoWeeksLater = format(addDays(new Date(), 14), 'yyyy-MM-dd');
     const { data: rawEvents } = await supabase.from('events').select(`
         id, title, slug, date, time, is_free, cover_image, description,
         venues:venue_id (name),
         categories:category_id (name)
-    `).or(`date.eq.${today},date.ilike.%bug_n%`).order('created_at', { ascending: false });
+    `).gte('date', today).lte('date', twoWeeksLater).order('date', { ascending: true }).order('time', { ascending: true });
 
     const events = (rawEvents || []).map((e: any) => ({
         id: e.id,
@@ -35,8 +36,8 @@ export default async function BugunPage() {
         <main className={styles.main}>
             <header className={styles.header}>
                 <div className={styles.headerContent}>
-                    <h1 className={styles.title}>Bugün Neler Var?</h1>
-                    <p className={styles.subtitle}>Kadıköy'de bugün nefes kesen etkinlikleri kaçırmayın.</p>
+                    <h1 className={styles.title}>Yaklaşan Etkinlikler</h1>
+                    <p className={styles.subtitle}>Bugünden itibaren önümüzdeki 2 hafta boyunca Kadıköy'de gerçekleşecek etkinlikleri keşfedin.</p>
                 </div>
             </header>
 
