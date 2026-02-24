@@ -2,6 +2,7 @@ import styles from './page.module.css';
 import EventCard from '../components/EventCard';
 import VenueCard from '../components/VenueCard';
 import GuideCard from '../components/GuideCard';
+import SearchBar from '../components/SearchBar';
 import Link from 'next/link';
 
 import { supabase } from '../utils/supabase';
@@ -56,10 +57,7 @@ export default async function Home() {
           Kadıköy'de <span className="text-gradient">ne yapılır?</span>
         </h1>
         <p className={styles.subtitle}>Güncel etkinlikleri, mekanları ve şehrin ritmini keşfet.</p>
-        <div className={styles.searchBar}>
-          <input type="text" placeholder="Grup, mekan, etkinlik veya tarih ara..." className={styles.input} />
-          <button className={styles.searchBtn}>Keşfet</button>
-        </div>
+        <SearchBar />
 
         <div className={styles.quickFilters}>
           <Link href="/bugun" className={styles.quickFilterBtn}>🔥 Bugün</Link>
