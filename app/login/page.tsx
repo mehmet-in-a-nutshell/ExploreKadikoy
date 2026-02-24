@@ -24,7 +24,13 @@ export default function LoginPage() {
         });
 
         if (error) {
-            setErrorMsg('Geçersiz e-posta adresi veya şifre.');
+            let trError = error.message;
+            if (trError.includes('Email not confirmed')) {
+                trError = 'E-posta adresi henüz doğrulanmamış. Lütfen Supabase panelinden e-posta onayını kapatın veya Authentication > Users tablosundan kullanıcıyı manuel olarak onaylayın (Confirm User).';
+            } else if (trError.includes('Invalid login credentials')) {
+                trError = 'Geçersiz e-posta adresi veya şifre.';
+            }
+            setErrorMsg(trError);
             setLoading(false);
         } else {
             router.push('/admin');
