@@ -1,5 +1,6 @@
 import { createClient } from '../../../utils/supabase/server';
 import Link from 'next/link';
+import AdminDeleteButton from '../../../components/AdminDeleteButton';
 
 export const revalidate = 0;
 
@@ -36,7 +37,7 @@ export default async function AdminGuidesList() {
                                 <td style={{ padding: '1rem', textAlign: 'right' }}>
                                     <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
                                         <Link href={`/admin/guides/edit/${guide.id}`} style={{ color: '#3b82f6', textDecoration: 'none', fontSize: '0.875rem' }}>Düzenle</Link>
-                                        <button style={{ background: 'none', border: 'none', color: '#f87171', cursor: 'pointer', fontSize: '0.875rem' }}>Sil</button>
+                                        <AdminDeleteButton id={guide.id} table="guides" title={guide.title} />
                                     </div>
                                 </td>
                             </tr>
