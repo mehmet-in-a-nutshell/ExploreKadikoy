@@ -2,6 +2,8 @@ import { supabase } from '../../../utils/supabase';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export const revalidate = 60;
 
@@ -55,9 +57,9 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
             )}
 
             {/* Content Body */}
-            <div style={{ color: '#d4d4d8', lineHeight: 1.8, fontSize: '1.125rem' }}>
+            <div className="markdown-content" style={{ color: '#d4d4d8', lineHeight: 1.8, fontSize: '1.125rem' }}>
                 {guide.content ? (
-                    <div style={{ whiteSpace: 'pre-wrap' }}>{guide.content}</div>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{guide.content}</ReactMarkdown>
                 ) : (
                     <div style={{ backgroundColor: '#18181b', padding: '2rem', borderRadius: '0.75rem', textAlign: 'center', border: '1px dashed #3f3f46' }}>
                         <p style={{ color: '#71717a', fontStyle: 'italic' }}>Bu rehberin detay içeriği henüz hazırlanmamıştır, yakında eklenecektir.</p>

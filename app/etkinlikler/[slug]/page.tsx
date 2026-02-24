@@ -2,6 +2,8 @@ import { supabase } from '../../../utils/supabase';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export const revalidate = 60;
 
@@ -73,10 +75,10 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             </div>
 
             {/* Content */}
-            <div style={{ color: '#d4d4d8', lineHeight: 1.7, fontSize: '1.125rem' }}>
+            <div className="markdown-content" style={{ color: '#d4d4d8', lineHeight: 1.7, fontSize: '1.125rem' }}>
                 <h3 style={{ fontSize: '1.25rem', color: 'white', marginBottom: '1rem', fontWeight: 600 }}>Etkinlik Hakkında</h3>
                 {event.description ? (
-                    <div style={{ whiteSpace: 'pre-wrap' }}>{event.description}</div>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{event.description}</ReactMarkdown>
                 ) : (
                     <p style={{ color: '#71717a', fontStyle: 'italic' }}>Bu etkinlik için henüz detaylı bir açıklama girilmemiş.</p>
                 )}

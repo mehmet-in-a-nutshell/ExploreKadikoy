@@ -3,6 +3,8 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import EventCard from '../../../components/EventCard';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 export const revalidate = 60;
 
@@ -77,9 +79,9 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
                         {venue.name}
                     </h1>
 
-                    <div style={{ color: '#d4d4d8', lineHeight: 1.7, fontSize: '1.125rem' }}>
+                    <div className="markdown-content" style={{ color: '#d4d4d8', lineHeight: 1.7, fontSize: '1.125rem' }}>
                         {venue.description ? (
-                            <p style={{ whiteSpace: 'pre-wrap' }}>{venue.description}</p>
+                            <ReactMarkdown remarkPlugins={[remarkGfm]}>{venue.description}</ReactMarkdown>
                         ) : (
                             <p style={{ color: '#71717a', fontStyle: 'italic' }}>Bu mekan için henüz bir açıklama eklenmemiş.</p>
                         )}
