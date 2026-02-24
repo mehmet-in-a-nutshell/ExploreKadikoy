@@ -32,7 +32,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             {/* Cover Image */}
             {event.cover_image ? (
                 <div style={{ position: 'relative', width: '100%', height: '400px', borderRadius: '1rem', overflow: 'hidden', marginBottom: '2rem' }}>
-                    <Image src={event.cover_image} alt={event.title} fill style={{ objectFit: 'cover' }} />
+                    <img src={event.cover_image} alt={event.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
             ) : (
                 <div style={{ width: '100%', height: '200px', backgroundColor: '#27272a', borderRadius: '1rem', marginBottom: '2rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

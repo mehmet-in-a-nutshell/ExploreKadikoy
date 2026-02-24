@@ -53,7 +53,7 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
                 <div style={{ flex: 1 }}>
                     {venue.cover_image ? (
                         <div style={{ position: 'relative', width: '100%', height: '400px', borderRadius: '1rem', overflow: 'hidden' }}>
-                            <Image src={venue.cover_image} alt={venue.name} fill style={{ objectFit: 'cover' }} />
+                            <img src={venue.cover_image} alt={venue.name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                         </div>
                     ) : (
                         <div style={{ width: '100%', height: '400px', backgroundColor: '#27272a', borderRadius: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>

@@ -50,7 +50,7 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
             {/* Cover Image */}
             {guide.cover_image && (
                 <div style={{ position: 'relative', width: '100%', height: '450px', borderRadius: '1rem', overflow: 'hidden', marginBottom: '3rem', border: '1px solid #27272a' }}>
-                    <Image src={guide.cover_image} alt={guide.title} fill style={{ objectFit: 'cover' }} />
+                    <img src={guide.cover_image} alt={guide.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
                 </div>
             )}
 
