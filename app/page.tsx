@@ -34,7 +34,8 @@ export default async function Home() {
     neighborhood: v.neighborhood || 'Kadıköy',
     description: v.description || '',
     slug: v.slug,
-    imageUrl: v.cover_image
+    imageUrl: v.cover_image,
+    rating: v.rating
   }));
 
   // Fetch top 2 guides
