@@ -10,6 +10,7 @@ export const metadata = {
 };
 
 export const revalidate = 10; // Refresh cache every 10 seconds
+import { format } from 'date-fns';
 
 export default async function EtkinliklerPage({
     searchParams,
@@ -49,7 +50,8 @@ export default async function EtkinliklerPage({
     }
 
     if (currentFilter === 'Bugün') {
-        events = events.filter(e => e.date === 'Bugün');
+        const todayStr = format(new Date(), 'yyyy-MM-dd');
+        events = events.filter(e => e.date === todayStr || e.date?.toLowerCase().includes('bugün'));
     } else if (currentFilter === 'Ücretsiz') {
         events = events.filter(e => e.isFree);
     }
