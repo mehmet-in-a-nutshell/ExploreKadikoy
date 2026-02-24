@@ -95,6 +95,16 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
                 </div>
             </div>
 
+            {/* Venue Rating at the Bottom */}
+            {venue.rating && (
+                <div style={{ marginTop: '3rem', padding: '2rem', backgroundColor: '#18181b', borderRadius: '1rem', border: '1px solid #27272a', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1rem' }}>
+                    <h3 style={{ color: 'white', fontSize: '1.25rem', fontWeight: 600, margin: 0 }}>Mekan Değerlendirmesi</h3>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#fbbf24', fontSize: '2rem', fontWeight: 'bold' }}>
+                        {'⭐'.repeat(Math.round(venue.rating))} <span style={{ color: '#a1a1aa', fontSize: '1.25rem', marginLeft: '0.5rem' }}>{venue.rating} / 5.0</span>
+                    </div>
+                </div>
+            )}
+
             {/* Related Events Section */}
             <section style={{ borderTop: '1px solid #27272a', paddingTop: '4rem' }}>
                 <h2 style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white', marginBottom: '2rem' }}>

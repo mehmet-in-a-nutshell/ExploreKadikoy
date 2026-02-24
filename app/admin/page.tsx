@@ -20,6 +20,12 @@ export default async function AdminDashboard() {
         .from('guides')
         .select('*', { count: 'exact', head: true });
 
+    // Fetch top rated venues count
+    const { count: topVenuesCount } = await supabase
+        .from('venues')
+        .select('*', { count: 'exact', head: true })
+        .gte('rating', 4.0);
+
     return (
         <div>
             <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem', color: 'white' }}>ExploreKadikoy Yönetim Paneli</h1>
@@ -38,6 +44,10 @@ export default async function AdminDashboard() {
                 <div style={{ backgroundColor: '#18181b', padding: '1.5rem', borderRadius: '0.75rem', border: '1px solid #27272a' }}>
                     <h3 style={{ color: '#e4e4e7', marginBottom: '0.5rem' }}>Şehir Rehberi</h3>
                     <p style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>{guidesCount || 0}</p>
+                </div>
+                <div style={{ backgroundColor: '#18181b', padding: '1.5rem', borderRadius: '0.75rem', border: '1px solid #27272a' }}>
+                    <h3 style={{ color: '#e4e4e7', marginBottom: '0.5rem' }}>Popüler Mekanlar (4.0+ ⭐)</h3>
+                    <p style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>{topVenuesCount || 0}</p>
                 </div>
             </div>
         </div>

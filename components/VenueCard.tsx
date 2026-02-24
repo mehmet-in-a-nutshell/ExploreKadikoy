@@ -8,6 +8,7 @@ export interface VenueCardProps {
     description: string;
     imageUrl?: string;
     slug: string;
+    rating?: number;
 }
 
 export default function VenueCard({
@@ -17,6 +18,7 @@ export default function VenueCard({
     description,
     imageUrl,
     slug,
+    rating,
 }: VenueCardProps) {
     return (
         <Link href={`/mekan/${slug}`} className={`${styles.card} glass`}>
@@ -33,6 +35,12 @@ export default function VenueCard({
                     <span className={styles.neighborhoodBadge}>{neighborhood}</span>
                     <h3 className={styles.title}>{name}</h3>
                 </div>
+
+                {rating && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginBottom: '0.5rem', color: '#fbbf24', fontSize: '0.875rem', fontWeight: 600 }}>
+                        <span>⭐</span> {rating}
+                    </div>
+                )}
 
                 <p className={styles.description}>{description}</p>
             </div>

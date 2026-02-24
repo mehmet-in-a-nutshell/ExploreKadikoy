@@ -17,7 +17,8 @@ export default function EditVenuePage({ params }: { params: Promise<{ id: string
         slug: '',
         neighborhood: '',
         description: '',
-        cover_image: ''
+        cover_image: '',
+        rating: ''
     });
 
     useEffect(() => {
@@ -29,7 +30,8 @@ export default function EditVenuePage({ params }: { params: Promise<{ id: string
                     slug: venueData.slug || '',
                     neighborhood: venueData.neighborhood || '',
                     description: venueData.description || '',
-                    cover_image: venueData.cover_image || ''
+                    cover_image: venueData.cover_image || '',
+                    rating: venueData.rating || ''
                 });
             }
             setLoading(false);
@@ -87,6 +89,13 @@ export default function EditVenuePage({ params }: { params: Promise<{ id: string
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                         <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Kapak Fotoğrafı URL (İsteğe Bağlı)</label>
                         <input name="cover_image" value={formData.cover_image} onChange={handleChange} placeholder="https://..." style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white' }} />
+                    </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Değerlendirme Puanı (1.0 - 5.0)</label>
+                        <input name="rating" type="number" min="1" max="5" step="0.1" value={formData.rating} onChange={handleChange} placeholder="Örn: 4.5" style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white' }} />
                     </div>
                 </div>
 
