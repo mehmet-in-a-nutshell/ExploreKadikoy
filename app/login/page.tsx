@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
     const router = useRouter();
-    const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [errorMsg, setErrorMsg] = useState('');
@@ -18,21 +18,13 @@ export default function LoginPage() {
         setLoading(true);
         setErrorMsg('');
 
-        // Hardcode the expected admin username
-        if (username.toLowerCase().trim() !== 'admin') {
-            setErrorMsg('Geçersiz kullanıcı adı veya şifre.');
-            setLoading(false);
-            return;
-        }
-
-        // Map 'admin' username to the actual Supabase auth email
         const { error } = await supabase.auth.signInWithPassword({
-            email: 'admin@explorekadikoy.com',
+            email,
             password,
         });
 
         if (error) {
-            setErrorMsg('Geçersiz kullanıcı adı veya şifre.');
+            setErrorMsg('Geçersiz e-posta adresi veya şifre.');
             setLoading(false);
         } else {
             router.push('/admin');
@@ -54,12 +46,12 @@ export default function LoginPage() {
 
                 <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>Kullanıcı Adı</label>
+                        <label style={{ fontSize: '0.875rem', color: 'var(--text-secondary)' }}>E-posta Adresi</label>
                         <input
-                            type="text"
+                            type="email"
                             required
-                            value={username}
-                            onChange={(e) => setUsername(e.target.value)}
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             style={{ padding: '0.875rem', borderRadius: '0.5rem', border: '1px solid rgba(255,255,255,0.1)', backgroundColor: 'rgba(0,0,0,0.2)', color: 'white', width: '100%' }}
                         />
                     </div>
