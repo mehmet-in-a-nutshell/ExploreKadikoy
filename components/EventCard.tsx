@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import styles from './EventCard.module.css';
+import FavoriteButton from './FavoriteButton';
 
 export interface EventCardProps {
     id: string;
@@ -25,35 +26,38 @@ export default function EventCard({
     slug,
 }: EventCardProps) {
     return (
-        <Link href={`/etkinlikler/${slug}`} className={`${styles.card} glass`}>
-            <div className={styles.imageHolder}>
-                {imageUrl ? (
-                    <img src={imageUrl} alt={title} className={styles.image} loading="lazy" />
-                ) : (
-                    <div className={styles.placeholderIcon}>🎟️</div>
-                )}
-                <div className={styles.badges}>
-                    <span className={styles.categoryBadge}>{category}</span>
-                    {isFree && <span className={styles.freeBadge}>Ücretsiz</span>}
-                </div>
-            </div>
-
-            <div className={styles.content}>
-                <div className={styles.header}>
-                    <h3 className={styles.title}>{title}</h3>
-                </div>
-
-                <div className={styles.details}>
-                    <div className={styles.detailItem}>
-                        <span className={styles.icon}>📍</span>
-                        <span>{venue}</span>
-                    </div>
-                    <div className={styles.detailItem}>
-                        <span className={styles.icon}>📅</span>
-                        <span>{date} • {time}</span>
+        <div style={{ position: 'relative' }}>
+            <Link href={`/etkinlikler/${slug}`} className={`${styles.card} glass`}>
+                <div className={styles.imageHolder}>
+                    {imageUrl ? (
+                        <img src={imageUrl} alt={title} className={styles.image} loading="lazy" />
+                    ) : (
+                        <div className={styles.placeholderIcon}>🎟️</div>
+                    )}
+                    <div className={styles.badges}>
+                        <span className={styles.categoryBadge}>{category}</span>
+                        {isFree && <span className={styles.freeBadge}>Ücretsiz</span>}
                     </div>
                 </div>
-            </div>
-        </Link>
+
+                <div className={styles.content}>
+                    <div className={styles.header}>
+                        <h3 className={styles.title}>{title}</h3>
+                    </div>
+
+                    <div className={styles.details}>
+                        <div className={styles.detailItem}>
+                            <span className={styles.icon}>📍</span>
+                            <span>{venue}</span>
+                        </div>
+                        <div className={styles.detailItem}>
+                            <span className={styles.icon}>📅</span>
+                            <span>{date} • {time}</span>
+                        </div>
+                    </div>
+                </div>
+            </Link>
+            <FavoriteButton type="event" itemId={id} />
+        </div>
     );
 }

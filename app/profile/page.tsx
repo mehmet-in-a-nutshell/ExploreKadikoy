@@ -1,5 +1,9 @@
 import { createClient } from '../../utils/supabase/server';
 import { redirect } from 'next/navigation';
+import EventCard from '../../components/EventCard';
+import VenueCard from '../../components/VenueCard';
+
+export const revalidate = 0; // Fresh fetch every time
 
 export default async function ProfilePage() {
     const supabase = await createClient();
@@ -9,32 +13,122 @@ export default async function ProfilePage() {
         redirect('/login');
     }
 
+    // Fetch favorite events with nested event details
+    const { data: rawFavEvents } = await supabase
+        .from('user_favorite_events')
+        .select(`
+            event_id,
+            events (
+                id, title, slug, date, time, is_free, cover_image,
+                venues:venue_id (name),
+                categories:category_id (name)
+            )
+        `)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+    const favEvents = (rawFavEvents || [])
+        .map((f: any) => f.events)
+        .filter(Boolean)
+        .map((e: any) => ({
+            id: e.id,
+            title: e.title,
+            slug: e.slug,
+            date: e.date,
+            time: e.time,
+            isFree: e.is_free,
+            imageUrl: e.cover_image,
+            venue: e.venues?.name || 'Kadıköy',
+            category: e.categories?.name || 'Diğer'
+        }));
+
+    // Fetch favorite venues with nested venue details
+    const { data: rawFavVenues } = await supabase
+        .from('user_favorite_venues')
+        .select(`
+            venue_id,
+            venues (
+                id, name, slug, neighborhood, description, cover_image, rating
+            )
+        `)
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+    const favVenues = (rawFavVenues || [])
+        .map((f: any) => f.venues)
+        .filter(Boolean)
+        .map((v: any) => ({
+            id: v.id,
+            name: v.name,
+            neighborhood: v.neighborhood || 'Kadıköy',
+            description: v.description || '',
+            slug: v.slug,
+            imageUrl: v.cover_image,
+            rating: v.rating
+        }));
+
     return (
-        <main style={{ minHeight: '100vh', padding: '6rem 2rem 2rem 2rem' }}>
-            <div style={{ maxWidth: '800px', margin: '0 auto', backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '2.5rem', borderRadius: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)' }}>
-                <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem' }}>Profilim</h1>
-                <p style={{ color: 'var(--text-secondary)', marginBottom: '2rem' }}>
-                    Hoş geldiniz, sekreteri olduğunuz favori etkinlikleriniz burada yer alacaktır.
-                </p>
+        <main style={{ minHeight: '100vh', padding: '6rem 2rem 5rem 2rem' }}>
+            <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', backgroundColor: 'rgba(0,0,0,0.2)', padding: '1.5rem', borderRadius: '0.75rem' }}>
+                {/* Profile Header */}
+                <div style={{ backgroundColor: 'rgba(255, 255, 255, 0.03)', padding: '2.5rem', borderRadius: '1rem', border: '1px solid rgba(255, 255, 255, 0.1)', marginBottom: '3rem', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                     <div>
-                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>E-posta Adresiniz:</span>
-                        <p style={{ fontWeight: 500 }}>{user.email}</p>
+                        <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', marginBottom: '0.5rem', color: 'white' }}>Profilim</h1>
+                        <p style={{ color: 'var(--text-secondary)' }}>Hoş geldiniz, {user.email}</p>
                     </div>
-                    <div>
-                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.875rem' }}>Üyelik Tarihi:</span>
-                        <p style={{ fontWeight: 500 }}>{new Date(user.created_at).toLocaleDateString('tr-TR')}</p>
-                    </div>
-                </div>
 
-                <div style={{ marginTop: '2rem', display: 'flex', gap: '1rem' }}>
                     <form action="/auth/logout" method="post">
-                        <button type="submit" style={{ padding: '0.75rem 1.5rem', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 'bold' }}>
+                        <button type="submit" style={{ padding: '0.75rem 1.5rem', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 'bold', transition: 'background-color 0.2s' }} onMouseOver={e => e.currentTarget.style.backgroundColor = '#dc2626'} onMouseOut={e => e.currentTarget.style.backgroundColor = '#ef4444'}>
                             Çıkış Yap
                         </button>
                     </form>
                 </div>
+
+                {/* Favorites Section */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '4rem' }}>
+
+                    {/* Favorite Events */}
+                    <section>
+                        <h2 style={{ fontSize: '1.75rem', fontWeight: 'bold', color: 'white', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid #27272a' }}>
+                            Favori Etkinliklerim ({favEvents.length})
+                        </h2>
+
+                        {favEvents.length > 0 ? (
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: '2rem' }}>
+                                {favEvents.map((evt) => (
+                                    <EventCard key={evt.id} {...evt} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div style={{ backgroundColor: '#18181b', padding: '3rem', borderRadius: '1rem', textAlign: 'center', border: '1px dashed #3f3f46' }}>
+                                <p style={{ color: '#a1a1aa', marginBottom: '1rem' }}>Henüz favorilerinize etkinlik eklemediniz.</p>
+                                <a href="/etkinlikler" style={{ color: '#ec4899', fontWeight: 600, textDecoration: 'none' }}>Etkinlikleri Keşfet &rarr;</a>
+                            </div>
+                        )}
+                    </section>
+
+                    {/* Favorite Venues */}
+                    <section>
+                        <h2 style={{ fontSize: '1.75rem', fontWeight: 'bold', color: 'white', marginBottom: '1.5rem', paddingBottom: '0.5rem', borderBottom: '1px solid #27272a' }}>
+                            Favori Mekanlarım ({favVenues.length})
+                        </h2>
+
+                        {favVenues.length > 0 ? (
+                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '2rem' }}>
+                                {favVenues.map((venue) => (
+                                    <VenueCard key={venue.id} {...venue} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div style={{ backgroundColor: '#18181b', padding: '3rem', borderRadius: '1rem', textAlign: 'center', border: '1px dashed #3f3f46' }}>
+                                <p style={{ color: '#a1a1aa', marginBottom: '1rem' }}>Henüz favorilerinize mekan eklemediniz.</p>
+                                <a href="/mekanlar" style={{ color: '#ec4899', fontWeight: 600, textDecoration: 'none' }}>Mekanları Keşfet &rarr;</a>
+                            </div>
+                        )}
+                    </section>
+                </div>
+
             </div>
         </main>
     );

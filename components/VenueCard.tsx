@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import styles from './VenueCard.module.css';
+import FavoriteButton from './FavoriteButton';
 
 export interface VenueCardProps {
     id: string;
@@ -21,29 +22,32 @@ export default function VenueCard({
     rating,
 }: VenueCardProps) {
     return (
-        <Link href={`/mekan/${slug}`} className={`${styles.card} glass`}>
-            <div className={styles.imageHolder}>
-                {imageUrl ? (
-                    <img src={imageUrl} alt={name} className={styles.image} loading="lazy" />
-                ) : (
-                    <div className={styles.placeholderIcon}>🏛️</div>
-                )}
-            </div>
-
-            <div className={styles.content}>
-                <div className={styles.header}>
-                    <span className={styles.neighborhoodBadge}>{neighborhood}</span>
-                    <h3 className={styles.title}>{name}</h3>
+        <div style={{ position: 'relative' }}>
+            <Link href={`/mekan/${slug}`} className={`${styles.card} glass`}>
+                <div className={styles.imageHolder}>
+                    {imageUrl ? (
+                        <img src={imageUrl} alt={name} className={styles.image} loading="lazy" />
+                    ) : (
+                        <div className={styles.placeholderIcon}>🏛️</div>
+                    )}
                 </div>
 
-                <p className={styles.description}>{description}</p>
-
-                {rating && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: 'auto', paddingTop: '0.5rem', color: '#fbbf24', fontSize: '0.875rem', fontWeight: 600 }}>
-                        <span>⭐</span> {rating}
+                <div className={styles.content}>
+                    <div className={styles.header}>
+                        <span className={styles.neighborhoodBadge}>{neighborhood}</span>
+                        <h3 className={styles.title}>{name}</h3>
                     </div>
-                )}
-            </div>
-        </Link>
+
+                    <p className={styles.description}>{description}</p>
+
+                    {rating && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: 'auto', paddingTop: '0.5rem', color: '#fbbf24', fontSize: '0.875rem', fontWeight: 600 }}>
+                            <span>⭐</span> {rating}
+                        </div>
+                    )}
+                </div>
+            </Link>
+            <FavoriteButton type="venue" itemId={id} />
+        </div>
     );
 }
