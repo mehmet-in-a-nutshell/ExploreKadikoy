@@ -15,7 +15,7 @@ export default async function BugunPage() {
         id, title, slug, date, time, is_free, cover_image, description,
         venues:venue_id (name),
         categories:category_id (name)
-    `).eq('date', 'Bugün').order('created_at', { ascending: false });
+    `).ilike('date', '%bug_n%').order('created_at', { ascending: false });
 
     const events = (rawEvents || []).map((e: any) => ({
         id: e.id,
