@@ -1,4 +1,5 @@
 import { supabase } from '../../../utils/supabase';
+import { createClient } from '../../../utils/supabase/server';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -9,6 +10,11 @@ export const revalidate = 60;
 
 export default async function GuideDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
+
+    // Check if user is admin
+    const supabaseServer = await createClient();
+    const { data: { user } } = await supabaseServer.auth.getUser();
+    const isAdmin = user?.email === 'admin@explorekadikoy.com';
 
     const { data: guide } = await supabase
         .from('guides')
@@ -70,6 +76,18 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
                     ExploreKadikoy Editörleri tarafından {new Date(guide.created_at).toLocaleDateString('tr-TR')} tarihinde oluşturuldu.
                 </div>
             </div>
+
+            {/* Admin Edit Button */}
+            {isAdmin && (
+                <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+                    <Link
+                        href={`/admin/guides/edit/${guide.id}`}
+                        style={{ display: 'inline-block', backgroundColor: '#6366f1', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', textDecoration: 'none', fontWeight: 600 }}
+                    >
+                        Bu Rehberi Düzenle (Admin)
+                    </Link>
+                </div>
+            )}
         </main>
     );
 }

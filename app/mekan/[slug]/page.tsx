@@ -1,4 +1,5 @@
 import { supabase } from '../../../utils/supabase';
+import { createClient } from '../../../utils/supabase/server';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,6 +11,11 @@ export const revalidate = 60;
 
 export default async function VenueDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
+
+    // Check if user is admin
+    const supabaseServer = await createClient();
+    const { data: { user } } = await supabaseServer.auth.getUser();
+    const isAdmin = user?.email === 'admin@explorekadikoy.com';
 
     // Fetch venue details
     const { data: venue } = await supabase
@@ -107,6 +113,18 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
                     </div>
                 )}
             </section>
+
+            {/* Admin Edit Button */}
+            {isAdmin && (
+                <div style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid #27272a', textAlign: 'center' }}>
+                    <Link
+                        href={`/admin/venues/edit/${venue.id}`}
+                        style={{ display: 'inline-block', backgroundColor: '#6366f1', color: 'white', padding: '0.75rem 1.5rem', borderRadius: '0.5rem', textDecoration: 'none', fontWeight: 600 }}
+                    >
+                        Bu Mekanı Düzenle (Admin)
+                    </Link>
+                </div>
+            )}
         </main>
     );
 }
