@@ -9,13 +9,15 @@ export const metadata = {
 import { supabase } from '../../utils/supabase';
 
 export const revalidate = 60; // Refresh cache every 60 seconds
+import { format } from 'date-fns';
 
 export default async function BugunPage() {
+    const today = format(new Date(), 'yyyy-MM-dd');
     const { data: rawEvents } = await supabase.from('events').select(`
         id, title, slug, date, time, is_free, cover_image, description,
         venues:venue_id (name),
         categories:category_id (name)
-    `).ilike('date', '%bug_n%').order('created_at', { ascending: false });
+    `).or(`date.eq.${today},date.ilike.%bug_n%`).order('created_at', { ascending: false });
 
     const events = (rawEvents || []).map((e: any) => ({
         id: e.id,
