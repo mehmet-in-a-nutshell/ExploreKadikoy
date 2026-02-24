@@ -28,13 +28,20 @@ export default async function Header() {
                 <div className={styles.actions} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
                     {user ? (
                         <>
-                            <Link href="/admin" className={styles.navLink} style={{ fontWeight: 'bold', color: 'var(--accent-primary)' }}>Admin Paneli</Link>
+                            {user.email?.toLowerCase() === 'admin@explorekadikoy.com' ? (
+                                <Link href="/admin" className={styles.navLink} style={{ fontWeight: 'bold', color: 'var(--accent-primary)' }}>Admin Paneli</Link>
+                            ) : (
+                                <Link href="/profile" className={styles.navLink} style={{ fontWeight: 'bold', color: 'white' }}>Profilim</Link>
+                            )}
                             <form action="/auth/logout" method="post">
                                 <button type="submit" className={styles.ctaBtn} style={{ backgroundColor: 'transparent', border: '1px solid rgba(255,255,255,0.2)', color: 'white' }}>Çıkış Yap</button>
                             </form>
                         </>
                     ) : (
-                        <Link href="/login" className={styles.ctaBtn}>Yönetici Girişi</Link>
+                        <>
+                            <Link href="/login" className={styles.navLink}>Giriş Yap</Link>
+                            <Link href="/register" className={styles.ctaBtn}>Üye Ol</Link>
+                        </>
                     )}
                 </div>
             </div>

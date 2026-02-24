@@ -32,17 +32,30 @@ export async function updateSession(request: NextRequest) {
         data: { user },
     } = await supabase.auth.getUser()
 
-    // Protect the admin routes
-    if (request.nextUrl.pathname.startsWith('/admin') && !user) {
+    // Protect the admin routes - ONLY for admin@explorekadikoy.com
+    if (request.nextUrl.pathname.startsWith('/admin')) {
+        if (!user || user.email?.toLowerCase() !== 'admin@explorekadikoy.com') {
+            const url = request.nextUrl.clone()
+            url.pathname = '/login'
+            return NextResponse.redirect(url)
+        }
+    }
+
+    // Protect the user profile routes
+    if (request.nextUrl.pathname.startsWith('/profile') && !user) {
         const url = request.nextUrl.clone()
         url.pathname = '/login'
         return NextResponse.redirect(url)
     }
 
-    // If user is already logged in, they shouldn't access login/register pages
+    // If user is already logged in, redirect them based on their role
     if ((request.nextUrl.pathname === '/login' || request.nextUrl.pathname === '/register') && user) {
         const url = request.nextUrl.clone()
-        url.pathname = '/admin'
+        if (user.email?.toLowerCase() === 'admin@explorekadikoy.com') {
+            url.pathname = '/admin'
+        } else {
+            url.pathname = '/profile'
+        }
         return NextResponse.redirect(url)
     }
 
