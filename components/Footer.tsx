@@ -27,6 +27,7 @@ export default function Footer() {
                                 <li><Link href="/konserler"> Konserler</Link></li>
                                 <li><Link href="/tiyatro">Tiyatro</Link></li>
                                 <li><Link href="/sergiler">Sergiler</Link></li>
+                                <li><Link href="/dans">Dans</Link></li>
                             </ul>
                         </div>
 
