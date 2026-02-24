@@ -6,8 +6,8 @@ import EventCard from '../../../components/EventCard';
 
 export const revalidate = 60;
 
-export default async function VenueDetailPage({ params }: { params: { slug: string } }) {
-    const { slug } = params;
+export default async function VenueDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+    const { slug } = await params;
 
     // Fetch venue details
     const { data: venue } = await supabase
