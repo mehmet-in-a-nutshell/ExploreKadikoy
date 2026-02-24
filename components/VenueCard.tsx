@@ -36,13 +36,13 @@ export default function VenueCard({
                     <h3 className={styles.title}>{name}</h3>
                 </div>
 
+                <p className={styles.description}>{description}</p>
+
                 {rating && (
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginBottom: '0.5rem', color: '#fbbf24', fontSize: '0.875rem', fontWeight: 600 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: 'auto', paddingTop: '0.5rem', color: '#fbbf24', fontSize: '0.875rem', fontWeight: 600 }}>
                         <span>⭐</span> {rating}
                     </div>
                 )}
-
-                <p className={styles.description}>{description}</p>
             </div>
         </Link>
     );
