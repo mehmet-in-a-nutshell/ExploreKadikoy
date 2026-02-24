@@ -89,7 +89,7 @@ export default async function ProfilePage() {
                         </div>
 
                         <form action="/auth/logout" method="post">
-                            <button type="submit" style={{ padding: '0.75rem 1.5rem', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 'bold', transition: 'background-color 0.2s' }} onMouseOver={e => e.currentTarget.style.backgroundColor = '#dc2626'} onMouseOut={e => e.currentTarget.style.backgroundColor = '#ef4444'}>
+                            <button type="submit" style={{ padding: '0.75rem 1.5rem', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 'bold', transition: 'background-color 0.2s' }}>
                                 Çıkış Yap
                             </button>
                         </form>
