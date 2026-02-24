@@ -1,14 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
 
 /* Basic CSS Reset */
-*, *::before, *::after {
+*,
+*::before,
+*::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html, body {
-  height: 100%;
+html {
+  min-height: 100%;
 }
 
 body {
@@ -17,16 +19,29 @@ body {
   font-family: 'Outfit', sans-serif;
 }
 
-img, picture, video, canvas, svg {
+img,
+picture,
+video,
+canvas,
+svg {
   display: block;
   max-width: 100%;
 }
 
-input, button, textarea, select {
+input,
+button,
+textarea,
+select {
   font: inherit;
 }
 
-p, h1, h2, h3, h4, h5, h6 {
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   overflow-wrap: break-word;
 }
 
@@ -38,11 +53,13 @@ p, h1, h2, h3, h4, h5, h6 {
   --bg-tertiary: #1f1f23;
   --text-primary: #ffffff;
   --text-secondary: #a1a1aa;
-  
-  --accent-primary: #ec4899; /* Vibrant Pink */
-  --accent-secondary: #8b5cf6; /* Deep Purple */
+
+  --accent-primary: #ec4899;
+  /* Vibrant Pink */
+  --accent-secondary: #8b5cf6;
+  /* Deep Purple */
   --accent-gradient: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
-  
+
   --border-color: rgba(255, 255, 255, 0.08);
   --border-color-hover: rgba(255, 255, 255, 0.15);
 
@@ -57,7 +74,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
   /* Typography */
   --font-family: 'Outfit', sans-serif;
-  
+
   /* Utils */
   --radius-sm: 8px;
   --radius-md: 12px;
