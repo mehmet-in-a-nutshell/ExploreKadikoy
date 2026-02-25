@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from 'react';
 import { createClient } from '../../../../../utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import { EVENT_TAXONOMY } from '../../../../../utils/taxonomies';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { tr } from 'date-fns/locale';
@@ -21,7 +22,9 @@ export default function EditEventPage({ params }: { params: Promise<{ id: string
     const [formData, setFormData] = useState({
         title: '',
         slug: '',
-        category_id: '',
+        category_id: null as any,
+        event_type: '',
+        event_subtype: '',
         venue_id: '',
         date: '',
         time: '',
@@ -47,6 +50,8 @@ export default function EditEventPage({ params }: { params: Promise<{ id: string
                     title: eventData.title || '',
                     slug: eventData.slug || '',
                     category_id: eventData.category_id || '',
+                    event_type: eventData.event_type || '',
+                    event_subtype: eventData.event_subtype || '',
                     venue_id: eventData.venue_id || '',
                     date: eventData.date || '',
                     time: eventData.time || '',
@@ -104,20 +109,35 @@ export default function EditEventPage({ params }: { params: Promise<{ id: string
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Kategori</label>
-                        <select name="category_id" value={formData.category_id} onChange={handleChange} style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white' }}>
-                            <option value="">Seçiniz...</option>
-                            {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
+                        <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Etkinlik Tipi *</label>
+                        <select required name="event_type" value={formData.event_type} onChange={(e) => {
+                            handleChange(e);
+                            setFormData(prev => ({ ...prev, event_type: e.target.value, event_subtype: '' }));
+                        }} style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white', appearance: 'none' }}>
+                            <option value="" disabled>Etkinlik tipi seçin</option>
+                            {Object.keys(EVENT_TAXONOMY).map(type => (
+                                <option key={type} value={type}>{type}</option>
+                            ))}
                         </select>
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                        <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Mekan</label>
-                        <select name="venue_id" value={formData.venue_id} onChange={handleChange} style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white' }}>
-                            <option value="">Seçiniz...</option>
-                            {venues.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
+                        <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Alt Tür *</label>
+                        <select required name="event_subtype" value={formData.event_subtype} onChange={handleChange} disabled={!formData.event_type} style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white', opacity: formData.event_type ? 1 : 0.5, appearance: 'none' }}>
+                            <option value="" disabled>Alt tür seçin</option>
+                            {formData.event_type && EVENT_TAXONOMY[formData.event_type]?.map((subtype: string) => (
+                                <option key={subtype} value={subtype}>{subtype}</option>
+                            ))}
                         </select>
                     </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Mekan</label>
+                    <select name="venue_id" value={formData.venue_id} onChange={handleChange} style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white', appearance: 'none' }}>
+                        <option value="">Seçiniz...</option>
+                        {venues.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
+                    </select>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>

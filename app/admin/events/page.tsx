@@ -7,7 +7,7 @@ export const revalidate = 0; // Always fetch fresh data in admin
 export default async function AdminEventsList() {
     const supabase = await createClient();
     const { data: rawEvents } = await supabase.from('events').select(`
-    id, title, date, time, is_free,
+    id, title, date, time, is_free, event_type, event_subtype,
     venues:venue_id (name)
   `).order('created_at', { ascending: false });
 
@@ -30,6 +30,7 @@ export default async function AdminEventsList() {
                             <th style={{ padding: '1rem', fontWeight: 600 }}>Etkinlik Adı</th>
                             <th style={{ padding: '1rem', fontWeight: 600 }}>Mekan</th>
                             <th style={{ padding: '1rem', fontWeight: 600 }}>Tarih / Saat</th>
+                            <th style={{ padding: '1rem', fontWeight: 600 }}>Etkinlik Tipi</th>
                             <th style={{ padding: '1rem', fontWeight: 600 }}>Türü</th>
                             <th style={{ padding: '1rem', fontWeight: 600, textAlign: 'right' }}>İşlemler</th>
                         </tr>
@@ -40,6 +41,16 @@ export default async function AdminEventsList() {
                                 <td style={{ padding: '1rem', fontWeight: 500 }}>{event.title}</td>
                                 <td style={{ padding: '1rem', color: '#a1a1aa' }}>{event.venues?.name || '-'}</td>
                                 <td style={{ padding: '1rem', color: '#a1a1aa' }}>{event.date} - {event.time}</td>
+                                <td style={{ padding: '1rem', color: '#c084fc' }}>
+                                    {event.event_type ? (
+                                        <span>
+                                            {event.event_type}
+                                            {event.event_subtype && <span style={{ color: '#a1a1aa', fontSize: '0.875rem' }}> / {event.event_subtype}</span>}
+                                        </span>
+                                    ) : (
+                                        <span style={{ color: '#71717a' }}>-</span>
+                                    )}
+                                </td>
                                 <td style={{ padding: '1rem' }}>
                                     {event.is_free ? (
                                         <span style={{ backgroundColor: '#064e3b', color: '#34d399', padding: '0.25rem 0.5rem', borderRadius: '999px', fontSize: '0.75rem' }}>Ücretsiz</span>
@@ -58,7 +69,7 @@ export default async function AdminEventsList() {
 
                         {rawEvents?.length === 0 && (
                             <tr>
-                                <td colSpan={5} style={{ padding: '2rem', textAlign: 'center', color: '#71717a' }}>
+                                <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: '#71717a' }}>
                                     Henüz hiç etkinlik eklenmemiş.
                                 </td>
                             </tr>
