@@ -9,7 +9,7 @@ export const metadata = {
 import { supabase } from '../../utils/supabase';
 
 export const revalidate = 60; // Refresh cache every 60 seconds
-import { format, addDays } from 'date-fns';
+import { format, addDays, subMonths } from 'date-fns';
 import { EVENT_TAXONOMY } from '../../utils/taxonomies';
 import Link from 'next/link';
 
@@ -21,12 +21,34 @@ export default async function BugunPage({
     const params = await searchParams;
     const today = format(new Date(), 'yyyy-MM-dd');
     const twoWeeksLater = format(addDays(new Date(), 14), 'yyyy-MM-dd');
+    const oneMonthAgo = format(subMonths(new Date(), 1), 'yyyy-MM-dd');
+
+    // Fetch upcoming events
     const { data: rawEvents } = await supabase.from('events').select(`
         id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
         venues:venue_id (name)
     `).gte('date', today).lte('date', twoWeeksLater).order('date', { ascending: true }).order('time', { ascending: true });
 
+    // Fetch past events
+    const { data: rawPastEvents } = await supabase.from('events').select(`
+        id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+        venues:venue_id (name)
+    `).gte('date', oneMonthAgo).lt('date', today).order('date', { ascending: false }).order('time', { ascending: false });
+
     const events = (rawEvents || []).map((e: any) => ({
+        id: e.id,
+        title: e.title,
+        slug: e.slug,
+        date: e.date,
+        time: e.time,
+        isFree: e.is_free,
+        imageUrl: e.cover_image,
+        venue: e.venues?.name || 'Kadıköy',
+        eventType: e.event_type || 'Diğer',
+        eventSubtype: e.event_subtype || ''
+    }));
+
+    const pastEvents = (rawPastEvents || []).map((e: any) => ({
         id: e.id,
         title: e.title,
         slug: e.slug,
@@ -44,9 +66,14 @@ export default async function BugunPage({
     const currentFilter = params.filter || 'Tümü';
 
     let eventsToDisplay = [...events];
+    let pastEventsToDisplay = [...pastEvents];
 
     if (currentCategory !== 'Tümü') {
         eventsToDisplay = eventsToDisplay.filter(e =>
+            e.eventType?.toLowerCase() === currentCategory.toLowerCase() ||
+            e.eventSubtype?.toLowerCase() === currentCategory.toLowerCase()
+        );
+        pastEventsToDisplay = pastEventsToDisplay.filter(e =>
             e.eventType?.toLowerCase() === currentCategory.toLowerCase() ||
             e.eventSubtype?.toLowerCase() === currentCategory.toLowerCase()
         );
@@ -54,6 +81,7 @@ export default async function BugunPage({
 
     if (currentFilter === 'Ücretsiz') {
         eventsToDisplay = eventsToDisplay.filter(e => e.isFree);
+        pastEventsToDisplay = pastEventsToDisplay.filter(e => e.isFree);
     }
 
     return (
@@ -98,12 +126,31 @@ export default async function BugunPage({
 
                     {eventsToDisplay.length === 0 && (
                         <div style={{ padding: '3rem', textAlign: 'center', gridColumn: '1 / -1', color: 'var(--text-secondary)' }}>
-                            <p>Bu filtreye uygun etkinlik bulunamadı.</p>
+                            <p>Bu filtreye uygun yaklaşan etkinlik bulunamadı.</p>
                             <Link href="/bugun" style={{ color: 'var(--accent-primary)', marginTop: '1rem', display: 'inline-block' }}>Filtreleri Temizle</Link>
                         </div>
                     )}
                 </div>
             </section>
+
+            {pastEventsToDisplay.length > 0 && (
+                <section className={styles.results} style={{ marginTop: '3rem', borderTop: '1px solid var(--border-color)', paddingTop: '3rem' }}>
+                    <div className={styles.headerContent}>
+                        <h2 className={styles.title} style={{ fontSize: '2rem' }}>Tamamlanan Etkinlikler</h2>
+                        <p className={styles.subtitle}>Son 1 ay içinde Kadıköy'de gerçekleşen etkinlikler.</p>
+                    </div>
+
+                    <div className={styles.resultsInfo} style={{ marginTop: '1.5rem' }}>
+                        <p><span>{pastEventsToDisplay.length} etkinlik</span> bulundu</p>
+                    </div>
+
+                    <div className={styles.grid}>
+                        {pastEventsToDisplay.map((evt) => (
+                            <EventCard key={evt.id} {...evt} />
+                        ))}
+                    </div>
+                </section>
+            )}
         </main>
     );
 }
