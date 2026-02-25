@@ -11,12 +11,11 @@ export const metadata = {
 
 export const revalidate = 10; // Refresh cache every 10 seconds
 import { format } from 'date-fns';
-import { EVENT_TAXONOMY } from '../../utils/taxonomies';
 
 export default async function EtkinliklerPage({
     searchParams,
 }: {
-    searchParams: Promise<{ category?: string; subtype?: string; filter?: string; sort?: string }>
+    searchParams: Promise<{ category?: string; filter?: string; sort?: string }>
 }) {
     const params = await searchParams;
 
@@ -40,7 +39,6 @@ export default async function EtkinliklerPage({
 
     // Read current searchParams
     const currentCategory = params.category || 'Tümü';
-    const currentSubtype = params.subtype || '';
     const currentFilter = params.filter || 'Tümü';
     const currentSort = params.sort || 'Yaklaşanlar';
 
@@ -51,12 +49,6 @@ export default async function EtkinliklerPage({
         events = events.filter(e =>
             e.eventType?.toLowerCase() === currentCategory.toLowerCase() ||
             e.eventSubtype?.toLowerCase() === currentCategory.toLowerCase()
-        );
-    }
-
-    if (currentSubtype) {
-        events = events.filter(e =>
-            e.eventSubtype?.toLowerCase() === currentSubtype.toLowerCase()
         );
     }
 
@@ -87,10 +79,10 @@ export default async function EtkinliklerPage({
                             Ücretsiz
                         </Link>
                         <div className={styles.divider}></div>
-                        {Object.keys(EVENT_TAXONOMY).map(cat => (
+                        {['Konser', 'Tiyatro', 'Sergi', 'Atölye', 'Stand-up'].map(cat => (
                             <Link
                                 key={cat}
-                                href={`/etkinlikler?category=${encodeURIComponent(cat)}`}
+                                href={`/etkinlikler?category=${cat}`}
                                 className={`${styles.filterBtn} ${currentCategory === cat ? styles.active : ''}`}
                             >
                                 {cat}
@@ -98,30 +90,6 @@ export default async function EtkinliklerPage({
                         ))}
                     </div>
                 </div>
-
-                {currentCategory !== 'Tümü' && EVENT_TAXONOMY[currentCategory] && (
-                    <div className={styles.filtersWrapper} style={{ marginTop: '0.75rem' }}>
-                        <div className={styles.filtersScroll}>
-                            <Link
-                                href={`/etkinlikler?category=${encodeURIComponent(currentCategory)}`}
-                                className={`${styles.filterBtn} ${!currentSubtype ? styles.active : ''}`}
-                                style={{ fontSize: '0.85rem', padding: '0.35rem 0.85rem' }}
-                            >
-                                Tümü
-                            </Link>
-                            {EVENT_TAXONOMY[currentCategory].map((subtype: string) => (
-                                <Link
-                                    key={subtype}
-                                    href={`/etkinlikler?category=${encodeURIComponent(currentCategory)}&subtype=${encodeURIComponent(subtype)}`}
-                                    className={`${styles.filterBtn} ${currentSubtype === subtype ? styles.active : ''}`}
-                                    style={{ fontSize: '0.85rem', padding: '0.35rem 0.85rem' }}
-                                >
-                                    {subtype}
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-                )}
             </header>
 
             <section className={styles.results}>
