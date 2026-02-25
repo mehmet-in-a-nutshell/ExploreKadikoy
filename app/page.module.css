@@ -84,9 +84,9 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: var(--spacing-sm);
-    margin-top: var(--spacing-xl);
+    margin: var(--spacing-xl) auto 0;
     width: 100%;
-    max-width: 1000px;
+    max-width: 750px;
 }
 
 .quickFilterBtn {
