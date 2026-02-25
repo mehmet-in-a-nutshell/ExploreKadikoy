@@ -81,22 +81,27 @@
 }
 
 .quickFilters {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
     gap: var(--spacing-sm);
     margin-top: var(--spacing-xl);
+    width: 100%;
+    max-width: 1000px;
 }
 
 .quickFilterBtn {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0.5rem;
     border-radius: var(--radius-full);
     font-size: 0.9rem;
     font-weight: 500;
     transition: var(--transition-fast);
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .quickFilterBtn:hover {
@@ -172,7 +177,17 @@
         border-radius: var(--radius-md);
     }
 
+    .quickFilters {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
     .gridTwoCols {
         grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .quickFilters {
+        grid-template-columns: repeat(2, 1fr);
     }
 }
