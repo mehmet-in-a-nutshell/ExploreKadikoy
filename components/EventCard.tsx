@@ -39,7 +39,7 @@ export default function EventCard({
                     <div className={styles.badges}>
                         {eventType && (
                             <span className={styles.categoryBadge}>
-                                {eventType} {eventSubtype && `• ${eventSubtype}`}
+                                {eventType}
                             </span>
                         )}
                         {isFree && <span className={styles.freeBadge}>Ücretsiz</span>}

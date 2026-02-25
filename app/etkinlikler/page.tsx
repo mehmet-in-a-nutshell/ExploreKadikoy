@@ -11,6 +11,7 @@ export const metadata = {
 
 export const revalidate = 10; // Refresh cache every 10 seconds
 import { format } from 'date-fns';
+import { EVENT_TAXONOMY } from '../../utils/taxonomies';
 
 export default async function EtkinliklerPage({
     searchParams,
@@ -79,10 +80,10 @@ export default async function EtkinliklerPage({
                             Ücretsiz
                         </Link>
                         <div className={styles.divider}></div>
-                        {['Konser', 'Tiyatro', 'Sergi', 'Atölye', 'Stand-up'].map(cat => (
+                        {Object.keys(EVENT_TAXONOMY).map(cat => (
                             <Link
                                 key={cat}
-                                href={`/etkinlikler?category=${cat}`}
+                                href={`/etkinlikler?category=${encodeURIComponent(cat)}`}
                                 className={`${styles.filterBtn} ${currentCategory === cat ? styles.active : ''}`}
                             >
                                 {cat}
