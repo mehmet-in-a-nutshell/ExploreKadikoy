@@ -93,9 +93,9 @@
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
-    padding: 0.5rem 0.5rem;
+    padding: 0.35rem 0.5rem;
     border-radius: var(--radius-full);
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     font-weight: 500;
     transition: var(--transition-fast);
     text-align: center;
