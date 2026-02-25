@@ -76,6 +76,7 @@ export default function NewVenuePage() {
                         <option value="🛍️ Yaşam Tarzı">🛍️ Yaşam Tarzı</option>
                         <option value="🌿 Açık Alanlar">🌿 Açık Alanlar</option>
                         <option value="🎓 Eğitim & Hobi">🎓 Eğitim & Hobi</option>
+                        <option value="🏋️ Spor & Aktivite">🏋️ Spor & Aktivite</option>
                     </select>
                 </div>
 
