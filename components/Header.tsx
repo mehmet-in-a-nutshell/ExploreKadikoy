@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import styles from './Header.module.css';
+import MobileMenu from './MobileMenu';
 
 import { createClient } from '../utils/supabase/server';
 
@@ -44,6 +45,8 @@ export default async function Header() {
                         </>
                     )}
                 </div>
+
+                <MobileMenu user={user ? { email: user.email } : null} />
             </div>
         </header>
     );

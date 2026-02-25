@@ -60,8 +60,14 @@
 }
 
 .actions {
-    display: flex;
+    display: none;
     align-items: center;
+}
+
+@media (min-width: 768px) {
+    .actions {
+        display: flex;
+    }
 }
 
 .ctaBtn {
