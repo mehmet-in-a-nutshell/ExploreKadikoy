@@ -15,9 +15,8 @@ export default async function BugunPage() {
     const today = format(new Date(), 'yyyy-MM-dd');
     const twoWeeksLater = format(addDays(new Date(), 14), 'yyyy-MM-dd');
     const { data: rawEvents } = await supabase.from('events').select(`
-        id, title, slug, date, time, is_free, cover_image, description,
-        venues:venue_id (name),
-        categories:category_id (name)
+        id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+        venues:venue_id (name)
     `).gte('date', today).lte('date', twoWeeksLater).order('date', { ascending: true }).order('time', { ascending: true });
 
     const events = (rawEvents || []).map((e: any) => ({
@@ -29,7 +28,8 @@ export default async function BugunPage() {
         isFree: e.is_free,
         imageUrl: e.cover_image,
         venue: e.venues?.name || 'Kadıköy',
-        category: e.categories?.name || 'Diğer'
+        eventType: e.event_type || 'Diğer',
+        eventSubtype: e.event_subtype || ''
     }));
 
     return (

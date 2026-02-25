@@ -12,13 +12,12 @@ export const revalidate = 60; // Refresh cache every 60 seconds
 
 export default async function DansPage() {
     const { data: rawEvents } = await supabase.from('events').select(`
-        id, title, slug, date, time, is_free, cover_image, description,
-        venues:venue_id (name),
-        categories:category_id (name, slug)
+        id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+        venues:venue_id (name)
     `).order('created_at', { ascending: false });
 
     const events = (rawEvents || [])
-        .filter((e: any) => e.categories?.slug === 'dans' || e.categories?.name === 'Dans')
+        .filter((e: any) => e.event_type === '🎬 Kültür & Sanat' && e.event_subtype?.includes('Dans'))
         .map((e: any) => ({
             id: e.id,
             title: e.title,
@@ -28,7 +27,8 @@ export default async function DansPage() {
             isFree: e.is_free,
             imageUrl: e.cover_image,
             venue: e.venues?.name || 'Kadıköy',
-            category: e.categories?.name || 'Dans'
+            eventType: e.event_type || '🎬 Kültür & Sanat',
+            eventSubtype: e.event_subtype || ''
         }));
 
     return (

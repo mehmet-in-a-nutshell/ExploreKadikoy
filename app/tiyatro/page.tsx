@@ -12,13 +12,12 @@ export const revalidate = 60; // Refresh cache every 60 seconds
 
 export default async function TiyatroPage() {
     const { data: rawEvents } = await supabase.from('events').select(`
-        id, title, slug, date, time, is_free, cover_image, description,
-        venues:venue_id (name),
-        categories:category_id (name)
+        id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+        venues:venue_id (name)
     `).order('created_at', { ascending: false });
 
     const events = (rawEvents || [])
-        .filter((e: any) => e.categories?.slug === 'tiyatro' || e.categories?.name === 'Tiyatro')
+        .filter((e: any) => e.event_type === '🎭 Sahne Sanatları' || e.event_subtype === 'Tiyatro')
         .map((e: any) => ({
             id: e.id,
             title: e.title,
@@ -28,7 +27,8 @@ export default async function TiyatroPage() {
             isFree: e.is_free,
             imageUrl: e.cover_image,
             venue: e.venues?.name || 'Kadıköy',
-            category: e.categories?.name || 'Tiyatro'
+            eventType: e.event_type || '🎭 Sahne Sanatları',
+            eventSubtype: e.event_subtype || ''
         }));
 
     return (

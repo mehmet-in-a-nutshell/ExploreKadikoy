@@ -20,9 +20,8 @@ export default async function EtkinliklerPage({
     const params = await searchParams;
 
     const { data: rawEvents } = await supabase.from('events').select(`
-        id, title, slug, date, time, is_free, cover_image, description,
-        venues:venue_id (name),
-        categories:category_id (name)
+        id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+        venues:venue_id (name)
     `).order('created_at', { ascending: false });
 
     const allEvents = (rawEvents || []).map((e: any) => ({
@@ -34,7 +33,8 @@ export default async function EtkinliklerPage({
         isFree: e.is_free,
         imageUrl: e.cover_image,
         venue: e.venues?.name || 'Kadıköy',
-        category: e.categories?.name || 'Diğer'
+        eventType: e.event_type || 'Diğer',
+        eventSubtype: e.event_subtype || ''
     }));
 
     // Read current searchParams
@@ -46,7 +46,10 @@ export default async function EtkinliklerPage({
     let events = [...allEvents];
 
     if (currentCategory !== 'Tümü') {
-        events = events.filter(e => e.category.toLowerCase() === currentCategory.toLowerCase());
+        events = events.filter(e =>
+            e.eventType?.toLowerCase() === currentCategory.toLowerCase() ||
+            e.eventSubtype?.toLowerCase() === currentCategory.toLowerCase()
+        );
     }
 
     if (currentFilter === 'Bugün') {

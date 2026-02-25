@@ -5,7 +5,8 @@ import FavoriteButton from './FavoriteButton';
 export interface EventCardProps {
     id: string;
     title: string;
-    category: string;
+    eventType?: string;
+    eventSubtype?: string;
     venue: string;
     time: string;
     date: string;
@@ -17,7 +18,8 @@ export interface EventCardProps {
 export default function EventCard({
     id,
     title,
-    category,
+    eventType,
+    eventSubtype,
     venue,
     time,
     date,
@@ -35,7 +37,11 @@ export default function EventCard({
                         <div className={styles.placeholderIcon}>🎟️</div>
                     )}
                     <div className={styles.badges}>
-                        <span className={styles.categoryBadge}>{category}</span>
+                        {eventType && (
+                            <span className={styles.categoryBadge}>
+                                {eventType} {eventSubtype && `• ${eventSubtype}`}
+                            </span>
+                        )}
                         {isFree && <span className={styles.freeBadge}>Ücretsiz</span>}
                     </div>
                 </div>

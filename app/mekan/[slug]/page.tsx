@@ -32,8 +32,7 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
     const { data: rawEvents } = await supabase
         .from('events')
         .select(`
-            id, title, slug, date, time, is_free, cover_image, description,
-            categories:category_id (name)
+            id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype
         `)
         .eq('venue_id', venue.id)
         .order('created_at', { ascending: false });
@@ -47,7 +46,8 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
         isFree: e.is_free,
         imageUrl: e.cover_image,
         venue: venue.name, // We know the venue name
-        category: e.categories?.name || 'Diğer'
+        eventType: e.event_type || 'Diğer',
+        eventSubtype: e.event_subtype || ''
     }));
 
     return (

@@ -20,9 +20,8 @@ export default async function ProfilePage() {
             .select(`
             event_id,
             events (
-                id, title, slug, date, time, is_free, cover_image,
-                venues:venue_id (name),
-                categories:category_id (name)
+                id, title, slug, date, time, is_free, cover_image, event_type, event_subtype,
+                venues:venue_id (name)
             )
         `)
             .eq('user_id', user.id)
@@ -35,7 +34,6 @@ export default async function ProfilePage() {
             .filter(Boolean)
             .map((e: any) => {
                 const venues = Array.isArray(e.venues) ? e.venues[0] : e.venues;
-                const categories = Array.isArray(e.categories) ? e.categories[0] : e.categories;
 
                 return {
                     id: e.id,
@@ -46,7 +44,8 @@ export default async function ProfilePage() {
                     isFree: e.is_free,
                     imageUrl: e.cover_image,
                     venue: venues?.name || 'Kadıköy',
-                    category: categories?.name || 'Diğer'
+                    eventType: e.event_type || 'Diğer',
+                    eventSubtype: e.event_subtype || ''
                 };
             });
 

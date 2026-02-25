@@ -12,9 +12,8 @@ export const revalidate = 60; // Refresh cache every 60 seconds
 
 export default async function UcretsizPage() {
     const { data: rawEvents } = await supabase.from('events').select(`
-        id, title, slug, date, time, is_free, cover_image, description,
-        venues:venue_id (name),
-        categories:category_id (name)
+        id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+        venues:venue_id (name)
     `).eq('is_free', true).order('created_at', { ascending: false });
 
     const events = (rawEvents || []).map((e: any) => ({
@@ -26,7 +25,8 @@ export default async function UcretsizPage() {
         isFree: e.is_free,
         imageUrl: e.cover_image,
         venue: e.venues?.name || 'Kadıköy',
-        category: e.categories?.name || 'Diğer'
+        eventType: e.event_type || 'Diğer',
+        eventSubtype: e.event_subtype || ''
     }));
 
     return (

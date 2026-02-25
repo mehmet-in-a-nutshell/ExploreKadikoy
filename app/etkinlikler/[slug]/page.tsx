@@ -20,8 +20,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         .from('events')
         .select(`
             *,
-            venues:venue_id (name, slug, neighborhood, google_maps_url),
-            categories:category_id (name, slug)
+            venues:venue_id (name, slug, neighborhood, google_maps_url)
         `)
         .eq('slug', slug)
         .single();
@@ -51,9 +50,9 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
             {/* Header Info */}
             <div style={{ marginBottom: '2rem' }}>
                 <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '1rem', flexWrap: 'wrap' }}>
-                    {event.categories && (
+                    {event.event_type && (
                         <span style={{ backgroundColor: '#6366f1', color: 'white', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem', fontWeight: 500 }}>
-                            {event.categories.name}
+                            {event.event_type} {event.event_subtype && `• ${event.event_subtype}`}
                         </span>
                     )}
                     {event.is_free && (

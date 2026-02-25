@@ -11,9 +11,8 @@ export const revalidate = 10; // Refresh cache every 10 seconds
 
 export default async function Home() {
   const { data: rawEvents } = await supabase.from('events').select(`
-        id, title, slug, date, time, is_free, cover_image, description,
-        venues:venue_id (name),
-        categories:category_id (name)
+        id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+        venues:venue_id (name)
   `).order('created_at', { ascending: false }).limit(4);
 
   const featuredEvents = (rawEvents || []).map((e: any) => ({
@@ -25,7 +24,8 @@ export default async function Home() {
     isFree: e.is_free,
     imageUrl: e.cover_image,
     venue: e.venues?.name || 'Kadıköy',
-    category: e.categories?.name || 'Diğer'
+    eventType: e.event_type || 'Diğer',
+    eventSubtype: e.event_subtype || ''
   }));
 
   const { data: rawVenues } = await supabase.from('venues').select('id, name, slug, neighborhood, description, cover_image, rating, venue_type').limit(3);

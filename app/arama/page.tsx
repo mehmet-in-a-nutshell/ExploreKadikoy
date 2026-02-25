@@ -24,9 +24,8 @@ export default async function AramaPage({
     if (query) {
         // Search in events (title or description)
         const { data: rawEvents } = await supabase.from('events').select(`
-            id, title, slug, date, time, is_free, cover_image, description,
-            venues:venue_id (name),
-            categories:category_id (name)
+            id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+            venues:venue_id (name)
         `).or(`title.ilike.%${query}%,description.ilike.%${query}%`).order('date', { ascending: true });
 
         events = (rawEvents || []).map((e: any) => ({
@@ -38,7 +37,8 @@ export default async function AramaPage({
             isFree: e.is_free,
             imageUrl: e.cover_image,
             venue: e.venues?.name || 'Kadıköy',
-            category: e.categories?.name || 'Diğer'
+            eventType: e.event_type || 'Diğer',
+            eventSubtype: e.event_subtype || ''
         }));
 
         // Search in venues (name or description)

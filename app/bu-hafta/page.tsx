@@ -16,9 +16,8 @@ export default async function BuHaftaPage() {
     const nextWeek = format(addDays(new Date(), 7), 'yyyy-MM-dd');
 
     const { data: rawEvents } = await supabase.from('events').select(`
-        id, title, slug, date, time, is_free, cover_image, description,
-        venues:venue_id (name),
-        categories:category_id (name)
+        id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+        venues:venue_id (name)
     `).gte('date', today).lte('date', nextWeek).order('date', { ascending: true }).order('time', { ascending: true });
 
     const events = (rawEvents || []).map((e: any) => ({
@@ -30,7 +29,8 @@ export default async function BuHaftaPage() {
         isFree: e.is_free,
         imageUrl: e.cover_image,
         venue: e.venues?.name || 'Kadıköy',
-        category: e.categories?.name || 'Diğer'
+        eventType: e.event_type || 'Diğer',
+        eventSubtype: e.event_subtype || ''
     }));
 
     return (

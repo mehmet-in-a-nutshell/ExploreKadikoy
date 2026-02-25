@@ -12,16 +12,15 @@ export const revalidate = 60; // Refresh cache every 60 seconds
 
 export default async function KonserlerPage() {
     const { data: rawEvents } = await supabase.from('events').select(`
-        id, title, slug, date, time, is_free, cover_image, description,
-        venues:venue_id (name),
-        categories:category_id (name)
-    `).eq('categories.slug', 'konser').order('created_at', { ascending: false });
+        id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+        venues:venue_id (name)
+    `).order('created_at', { ascending: false });
 
     // Filter out nulls because Supabase .eq on joined tables acts as an INNER JOIN for that row only
     // or we can filter in JS. PostgREST filtering on foreign tables might return the event with categories: null.
     // It's safer to just filter in JS for now or use the foreign table filter.
     const events = (rawEvents || [])
-        .filter((e: any) => e.categories?.slug === 'konser' || e.categories?.name === 'Konser')
+        .filter((e: any) => e.event_type === '🎶 Müzik')
         .map((e: any) => ({
             id: e.id,
             title: e.title,
@@ -31,7 +30,8 @@ export default async function KonserlerPage() {
             isFree: e.is_free,
             imageUrl: e.cover_image,
             venue: e.venues?.name || 'Kadıköy',
-            category: e.categories?.name || 'Konser'
+            eventType: e.event_type || '🎶 Müzik',
+            eventSubtype: e.event_subtype || ''
         }));
 
     return (
