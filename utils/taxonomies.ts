@@ -31,9 +31,7 @@ export const EVENT_TAXONOMY: Record<string, string[]> = {
         "Film gösterimi",
         "Sanat etkinliği",
         "Okuma / şiir dinletisi",
-        "Dans dersi",
-        "Dans pratiği",
-        "Dans gecesi"
+        "Dans"
     ],
     "🧘 Yaşam Tarzı & Wellness": [
         "Yoga",
