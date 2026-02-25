@@ -7,6 +7,7 @@ import Link from 'next/link';
 
 import { supabase } from '../utils/supabase';
 import { format } from 'date-fns';
+import { EVENT_TAXONOMY } from '../utils/taxonomies';
 
 export const revalidate = 10; // Refresh cache every 10 seconds
 
@@ -66,14 +67,9 @@ export default async function Home() {
         <div className={styles.quickFilters}>
           <Link href="/bugun" className={styles.quickFilterBtn}>🔥 Bugün</Link>
           <Link href="/ucretsiz-etkinlikler" className={styles.quickFilterBtn}>💸 Ücretsiz</Link>
-          <Link href="/konserler" className={styles.quickFilterBtn}>🎸 Konser</Link>
-          <Link href="/tiyatro" className={styles.quickFilterBtn}>🎭 Tiyatro</Link>
-          <Link href="/workshop" className={styles.quickFilterBtn}>🎨 Workshop</Link>
-          <Link href="/dans" className={styles.quickFilterBtn}>💃 Dans</Link>
-          <Link href="/spor" className={styles.quickFilterBtn}>🏃 Spor</Link>
-          <Link href="/oyun-gecesi" className={styles.quickFilterBtn}>🎲 Oyun gecesi</Link>
-          <Link href="/tadim-etkinligi" className={styles.quickFilterBtn}>🍷 Tadım etkinliği</Link>
-          <Link href="/bit-pazari" className={styles.quickFilterBtn}>🛍️ Bit pazarı</Link>
+          {Object.keys(EVENT_TAXONOMY).map(cat => (
+            <Link key={cat} href={`/etkinlikler?category=${encodeURIComponent(cat)}`} className={styles.quickFilterBtn}>{cat}</Link>
+          ))}
         </div>
       </div>
 
