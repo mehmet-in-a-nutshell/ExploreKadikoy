@@ -23,17 +23,21 @@ export default async function BugunPage({
     const twoWeeksLater = format(addDays(new Date(), 14), 'yyyy-MM-dd');
     const oneMonthAgo = format(subMonths(new Date(), 1), 'yyyy-MM-dd');
 
-    // Fetch upcoming events
-    const { data: rawEvents } = await supabase.from('events').select(`
-        id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
-        venues:venue_id (name)
-    `).gte('date', today).lte('date', twoWeeksLater).order('date', { ascending: true }).order('time', { ascending: true });
+    // Fetch upcoming and past events in parallel
+    const [upcomingResult, pastResult] = await Promise.all([
+        supabase.from('events').select(`
+            id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+            venues:venue_id (name)
+        `).gte('date', today).lte('date', twoWeeksLater).order('date', { ascending: true }).order('time', { ascending: true }),
 
-    // Fetch past events
-    const { data: rawPastEvents } = await supabase.from('events').select(`
-        id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
-        venues:venue_id (name)
-    `).gte('date', oneMonthAgo).lt('date', today).order('date', { ascending: false }).order('time', { ascending: false });
+        supabase.from('events').select(`
+            id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+            venues:venue_id (name)
+        `).gte('date', oneMonthAgo).lt('date', today).order('date', { ascending: false }).order('time', { ascending: false })
+    ]);
+
+    const rawEvents = upcomingResult.data;
+    const rawPastEvents = pastResult.data;
 
     const events = (rawEvents || []).map((e: any) => ({
         id: e.id,

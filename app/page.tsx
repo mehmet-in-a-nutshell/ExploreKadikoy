@@ -13,10 +13,20 @@ export const revalidate = 10; // Refresh cache every 10 seconds
 export default async function Home() {
   const today = format(new Date(), 'yyyy-MM-dd');
 
-  const { data: rawEvents } = await supabase.from('events').select(`
-        id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
-        venues:venue_id (name)
-  `).gte('date', today).order('created_at', { ascending: false }).limit(4);
+  const [eventsResult, venuesResult, guidesResult] = await Promise.all([
+    supabase.from('events').select(`
+            id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+            venues:venue_id (name)
+      `).gte('date', today).order('created_at', { ascending: false }).limit(4),
+
+    supabase.from('venues').select('id, name, slug, neighborhood, description, cover_image, rating, venue_type').limit(3),
+
+    supabase.from('guides').select('*').order('created_at', { ascending: false }).limit(2)
+  ]);
+
+  const rawEvents = eventsResult.data;
+  const rawVenues = venuesResult.data;
+  const rawGuides = guidesResult.data;
 
   const featuredEvents = (rawEvents || []).map((e: any) => ({
     id: e.id,
@@ -31,7 +41,6 @@ export default async function Home() {
     eventSubtype: e.event_subtype || ''
   }));
 
-  const { data: rawVenues } = await supabase.from('venues').select('id, name, slug, neighborhood, description, cover_image, rating, venue_type').limit(3);
   const topVenues = (rawVenues || []).map((v: any) => ({
     id: v.id,
     name: v.name,
@@ -43,8 +52,6 @@ export default async function Home() {
     venue_type: v.venue_type
   }));
 
-  // Fetch top 2 guides
-  const { data: rawGuides } = await supabase.from('guides').select('*').order('created_at', { ascending: false }).limit(2);
   const featuredGuides = (rawGuides || []).map((g: any) => ({
     id: g.id,
     title: g.title,
