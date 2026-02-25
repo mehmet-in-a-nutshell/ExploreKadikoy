@@ -56,7 +56,7 @@ export default async function ProfilePage() {
             .select(`
             venue_id,
             venues (
-                id, name, slug, neighborhood, description, cover_image, rating
+                id, name, slug, neighborhood, description, cover_image, rating, venue_type
             )
         `)
             .eq('user_id', user.id)
@@ -74,7 +74,8 @@ export default async function ProfilePage() {
                 description: v.description || '',
                 slug: v.slug,
                 imageUrl: v.cover_image,
-                rating: v.rating
+                rating: v.rating,
+                venue_type: v.venue_type
             }));
 
         return (

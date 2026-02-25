@@ -28,7 +28,7 @@ export default async function Home() {
     category: e.categories?.name || 'Diğer'
   }));
 
-  const { data: rawVenues } = await supabase.from('venues').select('*').limit(3);
+  const { data: rawVenues } = await supabase.from('venues').select('id, name, slug, neighborhood, description, cover_image, rating, venue_type').limit(3);
   const topVenues = (rawVenues || []).map((v: any) => ({
     id: v.id,
     name: v.name,
@@ -36,7 +36,8 @@ export default async function Home() {
     description: v.description || '',
     slug: v.slug,
     imageUrl: v.cover_image,
-    rating: v.rating
+    rating: v.rating,
+    venue_type: v.venue_type
   }));
 
   // Fetch top 2 guides

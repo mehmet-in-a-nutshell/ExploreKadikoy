@@ -42,7 +42,7 @@ export default async function AramaPage({
         }));
 
         // Search in venues (name or description)
-        const { data: rawVenues } = await supabase.from('venues').select('*').or(`name.ilike.%${query}%,description.ilike.%${query}%`);
+        const { data: rawVenues } = await supabase.from('venues').select('id, name, slug, neighborhood, description, cover_image, rating, venue_type').or(`name.ilike.%${query}%,description.ilike.%${query}%`);
         venues = (rawVenues || []).map((v: any) => ({
             id: v.id,
             name: v.name,
@@ -50,7 +50,8 @@ export default async function AramaPage({
             description: v.description || '',
             slug: v.slug,
             imageUrl: v.cover_image,
-            rating: v.rating
+            rating: v.rating,
+            venue_type: v.venue_type
         }));
     }
 

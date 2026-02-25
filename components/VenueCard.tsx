@@ -10,6 +10,7 @@ export interface VenueCardProps {
     imageUrl?: string;
     slug: string;
     rating?: number;
+    venue_type?: string;
 }
 
 export default function VenueCard({
@@ -20,6 +21,7 @@ export default function VenueCard({
     imageUrl,
     slug,
     rating,
+    venue_type,
 }: VenueCardProps) {
     return (
         <div style={{ position: 'relative' }}>
@@ -37,6 +39,12 @@ export default function VenueCard({
                         <span className={styles.neighborhoodBadge}>{neighborhood}</span>
                         <h3 className={styles.title}>{name}</h3>
                     </div>
+
+                    {venue_type && (
+                        <div style={{ fontSize: '0.875rem', color: '#c084fc', marginBottom: '0.5rem', fontWeight: 500 }}>
+                            {venue_type}
+                        </div>
+                    )}
 
                     <p className={styles.description}>{description}</p>
 

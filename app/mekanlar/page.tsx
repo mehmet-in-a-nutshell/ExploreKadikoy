@@ -11,7 +11,7 @@ import { supabase } from '../../utils/supabase';
 export const revalidate = 60; // Refresh cache every 60 seconds
 
 export default async function MekanlarPage() {
-    const { data: rawVenues } = await supabase.from('venues').select('*').order('created_at', { ascending: false });
+    const { data: rawVenues } = await supabase.from('venues').select('id, name, slug, neighborhood, description, cover_image, rating, venue_type').order('created_at', { ascending: false });
 
     const venues = (rawVenues || []).map((v: any) => ({
         id: v.id,
@@ -20,7 +20,8 @@ export default async function MekanlarPage() {
         description: v.description || '',
         slug: v.slug,
         imageUrl: v.cover_image,
-        rating: v.rating
+        rating: v.rating,
+        venue_type: v.venue_type
     }));
 
     return (

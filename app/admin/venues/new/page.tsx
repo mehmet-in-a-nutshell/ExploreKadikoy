@@ -17,7 +17,8 @@ export default function NewVenuePage() {
         description: '',
         cover_image: '',
         rating: '',
-        google_maps_url: ''
+        google_maps_url: '',
+        venue_type: ''
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -63,6 +64,19 @@ export default function NewVenuePage() {
                         <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>URL (Slug) *</label>
                         <input required name="slug" value={formData.slug} onChange={handleChange} style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white' }} />
                     </div>
+                </div>
+
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Mekan Tipi *</label>
+                    <select required name="venue_type" value={formData.venue_type} onChange={handleChange as any} style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white', appearance: 'none' }}>
+                        <option value="" disabled>Mekan tipi seçin</option>
+                        <option value="🍻 Yeme-İçme Mekanları">🍻 Yeme-İçme Mekanları</option>
+                        <option value="🎭 Kültür & Sanat">🎭 Kültür & Sanat</option>
+                        <option value="🎶 Etkinlik & Topluluk">🎶 Etkinlik & Topluluk</option>
+                        <option value="🛍️ Yaşam Tarzı">🛍️ Yaşam Tarzı</option>
+                        <option value="🌿 Açık Alanlar">🌿 Açık Alanlar</option>
+                        <option value="🎓 Eğitim & Hobi">🎓 Eğitim & Hobi</option>
+                    </select>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>

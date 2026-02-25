@@ -76,6 +76,9 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
                         <span style={{ backgroundColor: '#27272a', color: '#e4e4e7', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem' }}>
                             Mekan
                         </span>
+                        {venue.venue_type && (
+                            <span style={{ color: '#c084fc', fontSize: '1rem', fontWeight: 500 }}>{venue.venue_type}</span>
+                        )}
                         {venue.neighborhood && (
                             <span style={{ color: '#a1a1aa', fontSize: '0.875rem' }}>📍 {venue.neighborhood}</span>
                         )}
