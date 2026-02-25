@@ -40,7 +40,7 @@
 
 .filtersScroll {
     display: flex;
-    gap: var(--spacing-sm);
+    gap: 0.4rem;
     align-items: center;
     min-width: max-content;
 }
@@ -49,12 +49,13 @@
     background: var(--bg-tertiary);
     border: 1px solid var(--border-color);
     color: var(--text-secondary);
-    padding: 0.5rem 1.25rem;
+    padding: 0.4rem 0.9rem;
     border-radius: var(--radius-full);
-    font-size: 0.95rem;
+    font-size: 0.85rem;
     font-weight: 500;
     cursor: pointer;
     transition: var(--transition-fast);
+    white-space: nowrap;
 }
 
 .filterBtn:hover {
