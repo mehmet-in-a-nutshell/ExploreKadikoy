@@ -26,7 +26,7 @@ export default async function Header() {
                     </ul>
                 </nav>
 
-                <div className={styles.actions} style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                <div className={styles.actions}>
                     {user ? (
                         <>
                             {user.email?.toLowerCase() === 'admin@explorekadikoy.com' ? (
