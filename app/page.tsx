@@ -65,6 +65,14 @@ export default async function Home() {
           <Link href="/ucretsiz-etkinlikler" className={styles.quickFilterBtn}>💸 Ücretsiz</Link>
           <Link href="/konserler" className={styles.quickFilterBtn}>🎸 Konser</Link>
           <Link href="/tiyatro" className={styles.quickFilterBtn}>🎭 Tiyatro</Link>
+          <Link href="/workshop" className={styles.quickFilterBtn}>🎨 Workshop</Link>
+          <Link href="/dans" className={styles.quickFilterBtn}>💃 Dans</Link>
+          <Link href="/yoga" className={styles.quickFilterBtn}>🧘‍♀️ Yoga</Link>
+          <Link href="/spor" className={styles.quickFilterBtn}>🏃 Spor</Link>
+          <Link href="/oyun-gecesi" className={styles.quickFilterBtn}>🎲 Oyun gecesi</Link>
+          <Link href="/quiz-night" className={styles.quickFilterBtn}>🤔 Quiz night</Link>
+          <Link href="/tadim-etkinligi" className={styles.quickFilterBtn}>🍷 Tadım etkinliği</Link>
+          <Link href="/bit-pazari" className={styles.quickFilterBtn}>🛍️ Bit pazarı</Link>
         </div>
       </div>
 
