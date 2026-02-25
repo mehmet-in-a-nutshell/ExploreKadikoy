@@ -6,14 +6,17 @@ import SearchBar from '../components/SearchBar';
 import Link from 'next/link';
 
 import { supabase } from '../utils/supabase';
+import { format } from 'date-fns';
 
 export const revalidate = 10; // Refresh cache every 10 seconds
 
 export default async function Home() {
+  const today = format(new Date(), 'yyyy-MM-dd');
+
   const { data: rawEvents } = await supabase.from('events').select(`
         id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
         venues:venue_id (name)
-  `).order('created_at', { ascending: false }).limit(4);
+  `).gte('date', today).order('created_at', { ascending: false }).limit(4);
 
   const featuredEvents = (rawEvents || []).map((e: any) => ({
     id: e.id,
