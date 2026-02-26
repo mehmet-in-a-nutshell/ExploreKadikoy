@@ -16,9 +16,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr">
-      <body>
+      <body style={{ overflowX: 'hidden', width: '100%', maxWidth: '100vw' }}>
         <Header />
-        {children}
+        <div style={{ overflowX: 'hidden', width: '100%', maxWidth: '100vw', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+          {children}
+        </div>
         <Footer />
       </body>
     </html>
