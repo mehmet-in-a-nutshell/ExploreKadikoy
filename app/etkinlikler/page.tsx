@@ -9,7 +9,7 @@ export const metadata = {
     description: 'Kadıköy\'deki tüm etkinlikleri keşfedin. Konserler, tiyatrolar, sergiler ve atölyeler.',
 };
 
-import { format } from 'date-fns';
+import { format, subMonths } from 'date-fns';
 import { filterDistinctEvents } from '../../utils/eventFilter';
 export const revalidate = 60; // Refresh cache every 60 seconds
 import { EVENT_TAXONOMY } from '../../utils/taxonomies';
@@ -21,15 +21,37 @@ export default async function EtkinliklerPage({
 }) {
     const params = await searchParams;
     const today = format(new Date(), 'yyyy-MM-dd');
+    const oneMonthAgo = format(subMonths(new Date(), 1), 'yyyy-MM-dd');
 
-    const { data: rawEvents } = await supabase.from('events').select(`
-        id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
-        venues:venue_id (name)
-    `).gte('date', today).order('date', { ascending: true });
+    const [upcomingResult, pastResult] = await Promise.all([
+        supabase.from('events').select(`
+            id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+            venues:venue_id (name)
+        `).gte('date', today).order('date', { ascending: true }),
 
-    const distinctEvents = filterDistinctEvents(rawEvents || []);
+        supabase.from('events').select(`
+            id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
+            venues:venue_id (name)
+        `).gte('date', oneMonthAgo).lt('date', today).order('date', { ascending: false })
+    ]);
+
+    const distinctEvents = filterDistinctEvents(upcomingResult.data || []);
+    const distinctPastEvents = filterDistinctEvents(pastResult.data || []);
 
     const allEvents = distinctEvents.map((e: any) => ({
+        id: e.id,
+        title: e.title,
+        slug: e.slug,
+        date: e.date,
+        time: e.time,
+        isFree: e.is_free,
+        imageUrl: e.cover_image,
+        venue: e.venues?.name || 'Kadıköy',
+        eventType: e.event_type || 'Diğer',
+        eventSubtype: e.event_subtype || ''
+    }));
+
+    const allPastEvents = distinctPastEvents.map((e: any) => ({
         id: e.id,
         title: e.title,
         slug: e.slug,
@@ -49,9 +71,14 @@ export default async function EtkinliklerPage({
 
     // Apply filtering
     let events = [...allEvents];
+    let pastEvents = [...allPastEvents];
 
     if (currentCategory !== 'Tümü') {
         events = events.filter(e =>
+            e.eventType?.toLowerCase() === currentCategory.toLowerCase() ||
+            e.eventSubtype?.toLowerCase() === currentCategory.toLowerCase()
+        );
+        pastEvents = pastEvents.filter(e =>
             e.eventType?.toLowerCase() === currentCategory.toLowerCase() ||
             e.eventSubtype?.toLowerCase() === currentCategory.toLowerCase()
         );
@@ -60,8 +87,10 @@ export default async function EtkinliklerPage({
     if (currentFilter === 'Bugün') {
         const todayStr = format(new Date(), 'yyyy-MM-dd');
         events = events.filter(e => e.date === todayStr || e.date?.toLowerCase().includes('bugün'));
+        pastEvents = []; // Can't be past and today simultaneously
     } else if (currentFilter === 'Ücretsiz') {
         events = events.filter(e => e.isFree);
+        pastEvents = pastEvents.filter(e => e.isFree);
     }
 
     return (
@@ -122,6 +151,25 @@ export default async function EtkinliklerPage({
                     )}
                 </div>
             </section>
+
+            {pastEvents.length > 0 && (
+                <section className={styles.results} style={{ marginTop: '3rem', borderTop: '1px solid var(--border-color)', paddingTop: '3rem' }}>
+                    <div className={styles.headerContent}>
+                        <h2 className={styles.title} style={{ fontSize: '2rem' }}>Tamamlanan Etkinlikler</h2>
+                        <p className={styles.subtitle}>Son 1 ay içinde gerçekleşen etkinlikler.</p>
+                    </div>
+
+                    <div className={styles.resultsInfo} style={{ marginTop: '1.5rem' }}>
+                        <p><span>{pastEvents.length} etkinlik</span> bulundu</p>
+                    </div>
+
+                    <div className={styles.grid}>
+                        {pastEvents.map((evt) => (
+                            <EventCard key={evt.id} {...evt} />
+                        ))}
+                    </div>
+                </section>
+            )}
         </main>
     );
 }

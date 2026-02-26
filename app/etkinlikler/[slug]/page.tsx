@@ -88,7 +88,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', color: '#e4e4e7', backgroundColor: '#18181b', padding: '1.5rem', borderRadius: '0.75rem', border: '1px solid #27272a' }}>
                     {isRecurring && dayOfWeek && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'rgba(99, 102, 241, 0.15)', padding: '0.75rem 1rem', borderRadius: '0.5rem', border: '1px solid rgba(99, 102, 241, 0.3)', color: '#818cf8', fontWeight: 500 }}>
-                            <span>🔁</span> <span>Her hafta <strong>{dayOfWeek}</strong> günü{event.time && ` saat ${event.time}'te`} tekrarlanmaktadır.</span>
+                            <span>🔁</span> <span>Her hafta <strong>{dayOfWeek}</strong> günü</span>
                         </div>
                     )}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
