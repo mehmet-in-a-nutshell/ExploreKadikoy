@@ -7,13 +7,15 @@ import { EVENT_TAXONOMY } from '../../../../utils/taxonomies';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { tr } from 'date-fns/locale';
-import { format, parseISO } from 'date-fns';
+import { format, parseISO, addDays } from 'date-fns';
 
 export default function NewEventPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
     const [categories, setCategories] = useState<any[]>([]);
     const [venues, setVenues] = useState<any[]>([]);
+    const [isRecurring, setIsRecurring] = useState(false);
+    const [recurrenceWeeks, setRecurrenceWeeks] = useState(4);
 
     const supabase = createClient();
 
@@ -60,7 +62,26 @@ export default function NewEventPage() {
         setLoading(true);
 
         try {
-            const { error } = await supabase.from('events').insert([formData]);
+            const eventsToInsert = [];
+            const baseDate = parseISO(formData.date);
+
+            let totalWeeks = isRecurring ? recurrenceWeeks : 1;
+
+            for (let i = 0; i < totalWeeks; i++) {
+                const eventDate = addDays(baseDate, i * 7);
+                const formattedDate = format(eventDate, 'yyyy-MM-dd');
+
+                // Create a unique slug for recurring events (append date) to avoid conflicts
+                const eventSlug = i === 0 ? formData.slug : `${formData.slug}-${formattedDate}`;
+
+                eventsToInsert.push({
+                    ...formData,
+                    date: formattedDate,
+                    slug: eventSlug
+                });
+            }
+
+            const { error } = await supabase.from('events').insert(eventsToInsert);
             if (error) throw error;
             alert('Etkinlik başarıyla eklendi!');
             router.push('/admin/events');
@@ -144,6 +165,39 @@ export default function NewEventPage() {
                     </div>
                 </div>
 
+                <div style={{ backgroundColor: '#27272a', padding: '1.5rem', borderRadius: '0.5rem', border: '1px solid #3f3f46', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                        <input
+                            type="checkbox"
+                            id="is_recurring"
+                            checked={isRecurring}
+                            onChange={(e) => setIsRecurring(e.target.checked)}
+                            style={{ width: '1.25rem', height: '1.25rem' }}
+                        />
+                        <label htmlFor="is_recurring" style={{ color: '#e4e4e7', fontSize: '1rem', fontWeight: 500 }}>Bu etkinlik her hafta aynı gün tekrarlansın</label>
+                    </div>
+
+                    {isRecurring && (
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', paddingLeft: '1.75rem' }}>
+                            <label style={{ color: '#a1a1aa', fontSize: '0.875rem' }}>Kaç hafta boyunca eklensin?</label>
+                            <select
+                                value={recurrenceWeeks}
+                                onChange={(e) => setRecurrenceWeeks(Number(e.target.value))}
+                                style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#18181b', color: 'white', appearance: 'none', maxWidth: '200px' }}
+                            >
+                                <option value={2}>2 Hafta (Toplam 2 Etkinlik)</option>
+                                <option value={4}>4 Hafta (Toplam 4 Etkinlik)</option>
+                                <option value={8}>8 Hafta (Toplam 8 Etkinlik)</option>
+                                <option value={12}>12 Hafta (Toplam 12 Etkinlik)</option>
+                                <option value={24}>24 Hafta (Toplam 24 Etkinlik)</option>
+                            </select>
+                            <p style={{ fontSize: '0.75rem', color: '#71717a', marginTop: '0.25rem' }}>
+                                Sistem arka arkaya {recurrenceWeeks} adet etkinlik kaydı oluşturacaktır. İleride iptal olan haftaları etkinlik tablosundan tek tek silebilirsiniz.
+                            </p>
+                        </div>
+                    )}
+                </div>
+
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                     <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Kapak Fotoğrafı URL (İsteğe Bağlı)</label>
                     <input name="cover_image" value={formData.cover_image} onChange={handleChange} placeholder="https://..." style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white' }} />
@@ -162,7 +216,7 @@ export default function NewEventPage() {
                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
                     <button type="button" onClick={() => router.back()} style={{ padding: '0.75rem 1.5rem', backgroundColor: 'transparent', color: '#e4e4e7', border: '1px solid #3f3f46', borderRadius: '0.375rem', cursor: 'pointer' }}>İptal</button>
                     <button type="submit" disabled={loading} style={{ padding: '0.75rem 1.5rem', backgroundColor: '#6366f1', color: 'white', border: 'none', borderRadius: '0.375rem', cursor: 'pointer', fontWeight: 600 }}>
-                        {loading ? 'Ekleniyor...' : 'Etkinliği Kaydet'}
+                        {loading ? 'Ekleniyor...' : (isRecurring ? `${recurrenceWeeks} Etkinlik Kaydet` : 'Etkinliği Kaydet')}
                     </button>
                 </div>
             </form>
