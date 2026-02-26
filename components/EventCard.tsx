@@ -12,6 +12,7 @@ export interface EventCardProps {
     time: string;
     date: string;
     isFree?: boolean;
+    isRecurring?: boolean;
     imageUrl?: string;
     slug: string;
 }
@@ -25,6 +26,7 @@ export default function EventCard({
     time,
     date,
     isFree = false,
+    isRecurring = false,
     imageUrl,
     slug,
 }: EventCardProps) {
@@ -43,6 +45,7 @@ export default function EventCard({
                                 {eventType}
                             </span>
                         )}
+                        {isRecurring && <span className={styles.recurringBadge}>🔁</span>}
                         {isFree && <span className={styles.freeBadge}>Ücretsiz</span>}
                     </div>
                 </div>

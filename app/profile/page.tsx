@@ -42,6 +42,7 @@ export default async function ProfilePage() {
                     date: e.date,
                     time: e.time,
                     isFree: e.is_free,
+        isRecurring: e.isRecurring,
                     imageUrl: e.cover_image,
                     venue: venues?.name || 'Kadıköy',
                     eventType: e.event_type || 'Diğer',

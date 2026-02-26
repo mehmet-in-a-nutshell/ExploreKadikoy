@@ -62,6 +62,20 @@
     border: 1px solid var(--border-color);
 }
 
+.recurringBadge {
+    background: rgba(99, 102, 241, 0.85);
+    /* Indigo */
+    backdrop-filter: blur(4px);
+    color: white;
+    padding: 0.3rem 0.6rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 .freeBadge {
     background: rgba(16, 185, 129, 0.85);
     /* Emerald Green */

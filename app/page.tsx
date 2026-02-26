@@ -38,6 +38,7 @@ export default async function Home() {
     date: e.date,
     time: e.time,
     isFree: e.is_free,
+    isRecurring: e.isRecurring,
     imageUrl: e.cover_image,
     venue: e.venues?.name || 'Kadıköy',
     eventType: e.event_type || 'Genel',

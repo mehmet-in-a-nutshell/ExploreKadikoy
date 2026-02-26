@@ -44,6 +44,7 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
         date: e.date,
         time: e.time,
         isFree: e.is_free,
+        isRecurring: e.isRecurring,
         imageUrl: e.cover_image,
         venue: venue.name, // We know the venue name
         eventType: e.event_type || 'Diğer',

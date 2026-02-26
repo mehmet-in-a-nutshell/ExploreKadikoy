@@ -4,11 +4,16 @@ export function filterDistinctEvents(events: any[]): any[] {
     const uniqueEventsMap = new Map();
 
     for (const event of events) {
-        // If the event title is already in the map, we skip it
-        // Since we usually order by date ASC in category pages,
-        // the first one encountered is the earliest. 
+        // If the event title is already in the map, we skip adding it again
+        // However, we mark the *already stored* first occurrence as recurring 
+        // because we found a duplicate
         if (!uniqueEventsMap.has(event.title)) {
-            uniqueEventsMap.set(event.title, event);
+            // Default it to false initially, or relying on undefined is fine
+            uniqueEventsMap.set(event.title, { ...event, isRecurring: false });
+        } else {
+            // It's a duplicate. Mark the first one as recurring
+            const trackedEvent = uniqueEventsMap.get(event.title);
+            trackedEvent.isRecurring = true;
         }
     }
 
