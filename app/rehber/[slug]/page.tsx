@@ -27,7 +27,7 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
     }
 
     return (
-        <main style={{ minHeight: '100vh', padding: '6rem 2rem 2rem 2rem', maxWidth: '800px', margin: '0 auto' }}>
+        <main style={{ minHeight: '100vh', padding: '6rem 5vw 2rem 5vw', maxWidth: '800px', margin: '0 auto', overflowX: 'hidden' }}>
             {/* Back Button */}
             <Link href="/rehber" style={{ display: 'inline-block', marginBottom: '2rem', color: '#a1a1aa', textDecoration: 'none', transition: 'color 0.2s' }}>
                 &larr; Tüm Rehberlere Dön
@@ -57,8 +57,8 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
 
             {/* Cover Image */}
             {guide.cover_image && (
-                <div style={{ position: 'relative', width: '100%', height: '450px', borderRadius: '1rem', overflow: 'hidden', marginBottom: '3rem', border: '1px solid #27272a' }}>
-                    <img src={guide.cover_image} alt={guide.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <div style={{ position: 'relative', width: '100%', height: 'auto', aspectRatio: '16/9', maxHeight: '450px', borderRadius: '1rem', overflow: 'hidden', marginBottom: '3rem', border: '1px solid #27272a' }}>
+                    <Image src={guide.cover_image} alt={guide.title} fill style={{ objectFit: 'cover' }} priority sizes="(max-width: 800px) 100vw, 800px" />
                 </div>
             )}
 

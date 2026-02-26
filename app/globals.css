@@ -156,8 +156,9 @@ a {
   max-width: 100%;
   height: auto;
   border-radius: 0.75rem;
-  margin: 1.5rem 0;
+  margin: 1.5rem auto;
   display: block;
+  object-fit: contain;
 }
 
 .markdown-content a {
