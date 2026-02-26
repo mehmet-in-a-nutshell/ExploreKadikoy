@@ -7,6 +7,7 @@ export const metadata = {
 };
 
 import { supabase } from '../../utils/supabase';
+import { filterDistinctEvents } from '../../utils/eventFilter';
 
 export const revalidate = 60;
 
@@ -14,9 +15,11 @@ export default async function QuizNightPage() {
     const { data: rawEvents } = await supabase.from('events').select(`
         id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
         venues:venue_id (name)
-    `).order('created_at', { ascending: false });
+    `).order('date', { ascending: true });
 
-    const events = (rawEvents || [])
+    const distinctEvents = filterDistinctEvents(rawEvents || []);
+
+    const events = distinctEvents
         .filter((e: any) => e.event_subtype === 'Quiz night')
         .map((e: any) => ({
             id: e.id,

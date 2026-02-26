@@ -7,6 +7,7 @@ export const metadata = {
 };
 
 import { supabase } from '../../utils/supabase';
+import { filterDistinctEvents } from '../../utils/eventFilter';
 
 export const revalidate = 60; // Refresh cache every 60 seconds
 

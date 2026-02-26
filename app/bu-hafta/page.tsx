@@ -8,6 +8,7 @@ export const metadata = {
 };
 
 import { supabase } from '../../utils/supabase';
+import { filterDistinctEvents } from '../../utils/eventFilter';
 
 export const revalidate = 60; // Refresh cache every 60 seconds
 
@@ -20,7 +21,9 @@ export default async function BuHaftaPage() {
         venues:venue_id (name)
     `).gte('date', today).lte('date', nextWeek).order('date', { ascending: true }).order('time', { ascending: true });
 
-    const events = (rawEvents || []).map((e: any) => ({
+    const distinctEvents = filterDistinctEvents(rawEvents || []);
+
+    const events = distinctEvents.map((e: any) => ({
         id: e.id,
         title: e.title,
         slug: e.slug,

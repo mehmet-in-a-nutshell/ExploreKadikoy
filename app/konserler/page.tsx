@@ -7,6 +7,7 @@ export const metadata = {
 };
 
 import { supabase } from '../../utils/supabase';
+import { filterDistinctEvents } from '../../utils/eventFilter';
 
 export const revalidate = 60; // Refresh cache every 60 seconds
 
@@ -14,12 +15,11 @@ export default async function KonserlerPage() {
     const { data: rawEvents } = await supabase.from('events').select(`
         id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
         venues:venue_id (name)
-    `).order('created_at', { ascending: false });
+    `).order('date', { ascending: true });
 
-    // Filter out nulls because Supabase .eq on joined tables acts as an INNER JOIN for that row only
-    // or we can filter in JS. PostgREST filtering on foreign tables might return the event with categories: null.
-    // It's safer to just filter in JS for now or use the foreign table filter.
-    const events = (rawEvents || [])
+    const distinctEvents = filterDistinctEvents(rawEvents || []);
+
+    const events = distinctEvents
         .filter((e: any) => e.event_type === '🎶 Müzik')
         .map((e: any) => ({
             id: e.id,

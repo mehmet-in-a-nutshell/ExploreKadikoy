@@ -9,8 +9,9 @@ export const metadata = {
     description: 'Kadıköy\'deki tüm etkinlikleri keşfedin. Konserler, tiyatrolar, sergiler ve atölyeler.',
 };
 
-export const revalidate = 10; // Refresh cache every 10 seconds
 import { format } from 'date-fns';
+import { filterDistinctEvents } from '../../utils/eventFilter';
+export const revalidate = 60; // Refresh cache every 60 seconds
 import { EVENT_TAXONOMY } from '../../utils/taxonomies';
 
 export default async function EtkinliklerPage({
@@ -19,13 +20,16 @@ export default async function EtkinliklerPage({
     searchParams: Promise<{ category?: string; filter?: string; sort?: string }>
 }) {
     const params = await searchParams;
+    const today = format(new Date(), 'yyyy-MM-dd');
 
     const { data: rawEvents } = await supabase.from('events').select(`
         id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
         venues:venue_id (name)
-    `).order('created_at', { ascending: false });
+    `).gte('date', today).order('date', { ascending: true });
 
-    const allEvents = (rawEvents || []).map((e: any) => ({
+    const distinctEvents = filterDistinctEvents(rawEvents || []);
+
+    const allEvents = distinctEvents.map((e: any) => ({
         id: e.id,
         title: e.title,
         slug: e.slug,

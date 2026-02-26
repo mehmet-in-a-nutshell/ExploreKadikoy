@@ -11,6 +11,7 @@ import { supabase } from '../../utils/supabase';
 export const revalidate = 60; // Refresh cache every 60 seconds
 import { format, addDays, subMonths } from 'date-fns';
 import { EVENT_TAXONOMY } from '../../utils/taxonomies';
+import { filterDistinctEvents } from '../../utils/eventFilter';
 import Link from 'next/link';
 
 export default async function BugunPage({
@@ -39,7 +40,10 @@ export default async function BugunPage({
     const rawEvents = upcomingResult.data;
     const rawPastEvents = pastResult.data;
 
-    const events = (rawEvents || []).map((e: any) => ({
+    const distinctUpcoming = filterDistinctEvents(rawEvents || []);
+    const distinctPast = filterDistinctEvents(rawPastEvents || []);
+
+    const events = distinctUpcoming.map((e: any) => ({
         id: e.id,
         title: e.title,
         slug: e.slug,
@@ -52,7 +56,7 @@ export default async function BugunPage({
         eventSubtype: e.event_subtype || ''
     }));
 
-    const pastEvents = (rawPastEvents || []).map((e: any) => ({
+    const pastEvents = distinctPast.map((e: any) => ({
         id: e.id,
         title: e.title,
         slug: e.slug,

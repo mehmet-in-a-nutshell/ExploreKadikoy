@@ -7,8 +7,9 @@ import Link from 'next/link';
 
 import { supabase } from '../utils/supabase';
 import { format } from 'date-fns';
+import { filterDistinctEvents } from '../utils/eventFilter';
 
-export const revalidate = 10; // Refresh cache every 10 seconds
+export const revalidate = 60; // Refresh cache every 60 seconds
 
 export default async function Home() {
   const today = format(new Date(), 'yyyy-MM-dd');
@@ -17,7 +18,7 @@ export default async function Home() {
     supabase.from('events').select(`
             id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
             venues:venue_id (name)
-      `).gte('date', today).order('created_at', { ascending: false }).limit(4),
+      `).gte('date', today).order('date', { ascending: true }).limit(20),
 
     supabase.from('venues').select('id, name, slug, neighborhood, description, cover_image, rating, venue_type').limit(3),
 
@@ -28,7 +29,9 @@ export default async function Home() {
   const rawVenues = venuesResult.data;
   const rawGuides = guidesResult.data;
 
-  const featuredEvents = (rawEvents || []).map((e: any) => ({
+  const distinctRawEvents = filterDistinctEvents(rawEvents || []);
+
+  const featuredEvents = distinctRawEvents.slice(0, 4).map((e: any) => ({
     id: e.id,
     title: e.title,
     slug: e.slug,
@@ -37,7 +40,7 @@ export default async function Home() {
     isFree: e.is_free,
     imageUrl: e.cover_image,
     venue: e.venues?.name || 'Kadıköy',
-    eventType: e.event_type || 'Diğer',
+    eventType: e.event_type || 'Genel',
     eventSubtype: e.event_subtype || ''
   }));
 
