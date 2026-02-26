@@ -37,7 +37,7 @@ export default async function RehberPage() {
                     <p><span>{guides.length} keşif rehberi</span> bulundu</p>
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(400px, 1fr))', gap: '2rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 350px), 1fr))', gap: '2rem' }}>
                     {guides.map((guide) => (
                         <GuideCard key={guide.id} {...guide} />
                     ))}
