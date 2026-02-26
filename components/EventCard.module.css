@@ -67,17 +67,12 @@
     /* Indigo, slightly more opaque */
     backdrop-filter: blur(4px);
     color: white;
-    padding: 0.35rem 0.65rem;
+    padding: 0.3rem 0.4rem;
     border-radius: var(--radius-sm);
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    font-size: 0.85rem;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 0.35rem;
-    /* Space between icon and text */
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
