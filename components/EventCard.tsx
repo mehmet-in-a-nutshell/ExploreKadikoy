@@ -45,7 +45,11 @@ export default function EventCard({
                                 {eventType}
                             </span>
                         )}
-                        {isRecurring && <span className={styles.recurringBadge}>🔁</span>}
+                        {isRecurring && (
+                            <span className={styles.recurringBadge}>
+                                🔁 Her Hafta
+                            </span>
+                        )}
                         {isFree && <span className={styles.freeBadge}>Ücretsiz</span>}
                     </div>
                 </div>
