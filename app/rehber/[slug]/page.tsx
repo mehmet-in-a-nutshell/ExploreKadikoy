@@ -46,11 +46,11 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
                     )}
                 </div>
 
-                <h1 style={{ fontSize: '3rem', fontWeight: 'bold', color: 'white', marginBottom: '1.5rem', lineHeight: 1.2 }}>
+                <h1 style={{ fontSize: 'clamp(2rem, 5vw + 1rem, 3rem)', fontWeight: 'bold', color: 'white', marginBottom: '1.5rem', lineHeight: 1.2 }}>
                     {guide.title}
                 </h1>
 
-                <p style={{ fontSize: '1.25rem', color: '#a1a1aa', lineHeight: 1.6, maxWidth: '600px', margin: '0 auto' }}>
+                <p style={{ fontSize: 'clamp(1rem, 3vw + 0.5rem, 1.25rem)', color: '#a1a1aa', lineHeight: 1.6, maxWidth: '600px', margin: '0 auto' }}>
                     {guide.excerpt}
                 </p>
             </div>
