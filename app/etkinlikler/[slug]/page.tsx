@@ -5,6 +5,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { format, parseISO } from 'date-fns';
+import { tr } from 'date-fns/locale';
 
 export const revalidate = 60;
 
@@ -27,6 +29,26 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
 
     if (!event) {
         notFound();
+    }
+
+    // Check if this is a recurring event by searching for future events with the exact same title
+    const { data: futureOccurrences } = await supabase
+        .from('events')
+        .select('id')
+        .eq('title', event.title)
+        .gt('date', event.date)
+        .limit(1);
+
+    const isRecurring = futureOccurrences && futureOccurrences.length > 0;
+
+    // Determine the day of the week
+    let dayOfWeek = "";
+    if (isRecurring && event.date) {
+        try {
+            dayOfWeek = format(parseISO(event.date), 'EEEE', { locale: tr });
+        } catch (e) {
+            console.error("Error formatting date:", e);
+        }
     }
 
     return (
@@ -64,8 +86,13 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                 <h1 style={{ fontSize: '2.5rem', fontWeight: 'bold', color: 'white', marginBottom: '1rem', lineHeight: 1.2 }}>{event.title}</h1>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', color: '#e4e4e7', backgroundColor: '#18181b', padding: '1.5rem', borderRadius: '0.75rem', border: '1px solid #27272a' }}>
+                    {isRecurring && dayOfWeek && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', backgroundColor: 'rgba(99, 102, 241, 0.15)', padding: '0.75rem 1rem', borderRadius: '0.5rem', border: '1px solid rgba(99, 102, 241, 0.3)', color: '#818cf8', fontWeight: 500 }}>
+                            <span>🔁</span> <span>Her hafta <strong>{dayOfWeek}</strong> günü{event.time && ` saat ${event.time}'te`} tekrarlanmaktadır.</span>
+                        </div>
+                    )}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        <span>📅</span> <strong>Tarih:</strong> {event.date} {event.time && `- ${event.time}`}
+                        <span>📅</span> <strong>Tarih:</strong> {format(parseISO(event.date), 'dd MMMM yyyy', { locale: tr })} {event.time && `- ${event.time}`}
                     </div>
                     {event.venues && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
