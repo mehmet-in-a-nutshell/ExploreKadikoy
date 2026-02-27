@@ -74,8 +74,12 @@ export default function NewEventPage() {
                 // Create a unique slug for recurring events (append date) to avoid conflicts
                 const eventSlug = i === 0 ? formData.slug : `${formData.slug}-${formattedDate}`;
 
+                const baseData = { ...formData };
+                if (baseData.venue_id === '') baseData.venue_id = null as any;
+                if (baseData.category_id === '') baseData.category_id = null as any;
+
                 eventsToInsert.push({
-                    ...formData,
+                    ...baseData,
                     date: formattedDate,
                     slug: eventSlug
                 });

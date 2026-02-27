@@ -75,7 +75,11 @@ export default function EditEventPage({ params }: { params: Promise<{ id: string
         setSaving(true);
 
         try {
-            const { error } = await supabase.from('events').update(formData).eq('id', id);
+            const dataToUpdate = { ...formData };
+            if (dataToUpdate.venue_id === '') dataToUpdate.venue_id = null as any;
+            if (dataToUpdate.category_id === '') dataToUpdate.category_id = null as any;
+
+            const { error } = await supabase.from('events').update(dataToUpdate).eq('id', id);
             if (error) throw error;
             alert('Etkinlik başarıyla güncellendi!');
             router.push('/admin/events');
