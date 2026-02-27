@@ -9,6 +9,21 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { tr } from 'date-fns/locale';
 import { format, parseISO, addDays } from 'date-fns';
 
+const TR_TO_EN_MAP: Record<string, string> = {
+    'ç': 'c', 'ğ': 'g', 'ı': 'i', 'ö': 'o', 'ş': 's', 'ü': 'u',
+    'Ç': 'c', 'Ğ': 'g', 'İ': 'i', 'Ö': 'o', 'Ş': 's', 'Ü': 'u',
+};
+
+const slugify = (str: string) => {
+    return str
+        .replace(/[çğıöşüÇĞİÖŞÜ]/g, match => TR_TO_EN_MAP[match] || match)
+        .toLowerCase()
+        .trim()
+        .replace(/[^\w\s-]/g, '')
+        .replace(/[\s_-]+/g, '-')
+        .replace(/^-+|-+$/g, '');
+};
+
 export default function NewEventPage() {
     const router = useRouter();
     const [loading, setLoading] = useState(false);
@@ -47,13 +62,55 @@ export default function NewEventPage() {
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const value = e.target.type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
+        setFormData(prev => ({ ...prev, [e.target.name]: value }));
+    };
 
-        // Auto-generate slug from title
-        if (e.target.name === 'title' && !formData.slug) {
-            const slug = e.target.value.toLowerCase().trim().replace(/[^\w\s-]/g, '').replace(/[\s_-]+/g, '-').replace(/^-+|-+$/g, '');
-            setFormData(prev => ({ ...prev, title: e.target.value, slug }));
-        } else {
-            setFormData(prev => ({ ...prev, [e.target.name]: value }));
+    const handleTitleBlur = async () => {
+        if (!formData.title || formData.slug) return; // Only auto-generate if slug is empty
+
+        const baseSlug = slugify(formData.title);
+
+        try {
+            // Check for existing slugs starting with this base
+            const { data, error } = await supabase
+                .from('events')
+                .select('slug')
+                .ilike('slug', `${baseSlug}%`);
+
+            if (error) {
+                console.error("Error checking slugs:", error);
+                setFormData(prev => ({ ...prev, slug: baseSlug }));
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                // No conflicts, use base slug
+                setFormData(prev => ({ ...prev, slug: baseSlug }));
+                return;
+            }
+
+            // Conflict found. Find highest sequence number.
+            let maxSeq = 1;
+            const seqRegex = new RegExp(`^${baseSlug}-(\\d+)$`);
+
+            // Start at 1 because baseSlug itself is implicitly 1
+            for (const row of data) {
+                if (row.slug === baseSlug) {
+                    maxSeq = Math.max(maxSeq, 1);
+                } else {
+                    const match = row.slug.match(seqRegex);
+                    if (match) {
+                        maxSeq = Math.max(maxSeq, parseInt(match[1], 10));
+                    }
+                }
+            }
+
+            const uniqueSlug = `${baseSlug}-${maxSeq + 1}`;
+            setFormData(prev => ({ ...prev, slug: uniqueSlug }));
+
+        } catch (err) {
+            console.error("Error in slug generation:", err);
+            setFormData(prev => ({ ...prev, slug: baseSlug }));
         }
     };
 
@@ -106,7 +163,7 @@ export default function NewEventPage() {
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                         <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Etkinlik Adı *</label>
-                        <input required name="title" value={formData.title} onChange={handleChange} style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white' }} />
+                        <input required name="title" value={formData.title} onChange={handleChange} onBlur={handleTitleBlur} style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white' }} />
                     </div>
 
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
