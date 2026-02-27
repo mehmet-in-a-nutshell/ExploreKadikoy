@@ -9,7 +9,7 @@ export default async function AdminEventsList() {
     const { data: rawEvents } = await supabase.from('events').select(`
     id, title, date, time, is_free, event_type, event_subtype,
     venues:venue_id (name)
-  `).order('created_at', { ascending: false });
+  `).order('date', { ascending: false });
 
     return (
         <div>
