@@ -21,8 +21,8 @@ export default function IletisimPage() {
                     <p style={{ marginBottom: '1rem' }}>
                         Genel sorular, işbirlikleri veya geri bildirimleriniz için bize her zaman e-posta yoluyla ulaşabilirsiniz:
                     </p>
-                    <a href="mailto:info@explorekadikoy.com" style={{ color: 'var(--accent-primary)', fontWeight: 'bold', fontSize: '1.25rem', textDecoration: 'none' }}>
-                        info@explorekadikoy.com
+                    <a href="mailto:mehmetinanutshell@gmail.com" style={{ color: 'var(--accent-primary)', fontWeight: 'bold', fontSize: '1.25rem', textDecoration: 'none' }}>
+                        mehmetinanutshell@gmail.com
                     </a>
                 </div>
 
