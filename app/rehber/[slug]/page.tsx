@@ -5,8 +5,29 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Metadata } from 'next';
 
 export const revalidate = 60;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const metaSupabase = await createClient();
+
+    const { data } = await metaSupabase
+        .from('guides')
+        .select('title, excerpt')
+        .eq('slug', slug)
+        .single();
+
+    if (!data) {
+        return { title: 'Rehber Bulunamadı' };
+    }
+
+    return {
+        title: data.title,
+        description: data.excerpt || `${data.title} keşfi Kadıköy rehberimizde.`,
+    };
+}
 
 export default async function GuideDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;

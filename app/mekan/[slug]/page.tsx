@@ -6,8 +6,32 @@ import Link from 'next/link';
 import EventCard from '../../../components/EventCard';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { Metadata } from 'next';
 
 export const revalidate = 60;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+    const metaSupabase = await createClient();
+
+    const { data } = await metaSupabase
+        .from('venues')
+        .select('name, description, neighborhood')
+        .eq('slug', slug)
+        .single();
+
+    if (!data) {
+        return { title: 'Mekan Bulunamadı' };
+    }
+
+    const stripMd = data.description ? data.description.replace(/[*_#]/g, '').substring(0, 150) + '...' : undefined;
+    const locationInfo = data.neighborhood ? `${data.neighborhood} - ` : '';
+
+    return {
+        title: data.name,
+        description: stripMd || `${locationInfo}${data.name} mekanında gerçekleşecek tüm etkinlikleri keşfedin.`,
+    };
+}
 
 export default async function VenueDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;

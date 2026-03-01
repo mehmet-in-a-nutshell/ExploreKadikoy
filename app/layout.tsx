@@ -4,9 +4,21 @@ import Footer from "../components/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ExploreKadikoy - Kadıköy'de Ne Yapılır?",
+  metadataBase: new URL('https://explorekadikoy.com'),
+  title: {
+    template: '%s | Explore Kadıköy',
+    default: "Explore Kadıköy - Kadıköy'de Ne Yapılır?",
+  },
   description: "Kadıköy'deki güncel etkinlikler, konserler, tiyatrolar, atölyeler ve rehberleri keşfedin.",
   keywords: "kadıköy, etkinlik, konser, tiyatro, istanbul, moda, yel değirmeni",
+  openGraph: {
+    title: "Explore Kadıköy - Kadıköy'de Ne Yapılır?",
+    description: "Kadıköy'deki güncel etkinlikler, konserler, tiyatrolar ve atölyeleri keşfedin.",
+    url: 'https://explorekadikoy.com',
+    siteName: 'Explore Kadıköy',
+    locale: 'tr_TR',
+    type: 'website',
+  },
 };
 
 export default function RootLayout({

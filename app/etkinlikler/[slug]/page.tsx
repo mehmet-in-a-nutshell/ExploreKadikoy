@@ -7,8 +7,34 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { format, parseISO } from 'date-fns';
 import { tr } from 'date-fns/locale';
+import { Metadata } from 'next';
 
 export const revalidate = 60;
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+    const { slug } = await params;
+
+    // Create an independent client to avoid triggering cookies/auth error in meta phase
+    const metaSupabase = await createClient();
+
+    const { data } = await metaSupabase
+        .from('events')
+        .select('title, description')
+        .eq('slug', slug)
+        .single();
+
+    if (!data) {
+        return { title: 'Etkinlik Bulunamadı' };
+    }
+
+    // Strip markdown bold/italics for description parsing if needed, or simply slice it
+    const stripMd = data.description ? data.description.replace(/[*_#]/g, '').substring(0, 150) + '...' : undefined;
+
+    return {
+        title: data.title,
+        description: stripMd || `${data.title} etkinliği Kadıköy'de sizi bekliyor.`,
+    };
+}
 
 export default async function EventDetailPage({ params }: { params: Promise<{ slug: string }> }) {
     const { slug } = await params;
