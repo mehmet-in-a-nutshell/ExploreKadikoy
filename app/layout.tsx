@@ -9,6 +9,9 @@ export const metadata: Metadata = {
     template: '%s | Explore Kadıköy',
     default: "Explore Kadıköy - Kadıköy'de Ne Yapılır?",
   },
+  icons: {
+    icon: '/icon.svg?v=k_logo_v1',
+  },
   description: "Kadıköy'deki güncel etkinlikler, konserler, tiyatrolar, atölyeler ve rehberleri keşfedin.",
   keywords: "kadıköy, etkinlik, konser, tiyatro, istanbul, moda, yel değirmeni",
   openGraph: {
