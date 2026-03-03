@@ -98,8 +98,11 @@ export default function EditGuidePage({ params }: { params: Promise<{ id: string
                 </div>
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-                    <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Rehber İçeriği</label>
-                    <textarea name="content" value={formData.content} onChange={handleChange} rows={8} style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white', resize: 'vertical' }} />
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
+                        <label style={{ color: '#e4e4e7', fontSize: '0.875rem' }}>Rehber İçeriği</label>
+                        <span style={{ fontSize: '0.75rem', color: '#a1a1aa' }}>💡 Görsel eklemek için: <code>![Açıklama](Görsel_Linki)</code> formatını kullanın.</span>
+                    </div>
+                    <textarea name="content" value={formData.content} onChange={handleChange} rows={12} style={{ padding: '0.75rem', borderRadius: '0.375rem', border: '1px solid #3f3f46', backgroundColor: '#27272a', color: 'white', resize: 'vertical' }} />
                 </div>
 
                 <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '1rem', marginTop: '1rem' }}>
