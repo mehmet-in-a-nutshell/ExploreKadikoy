@@ -31,7 +31,7 @@ export default async function Home() {
 
   const distinctRawEvents = filterDistinctEvents(rawEvents || []);
 
-  const featuredEvents = distinctRawEvents.slice(0, 4).map((e: any) => ({
+  const featuredEvents = distinctRawEvents.slice(0, 6).map((e: any) => ({
     id: e.id,
     title: e.title,
     slug: e.slug,
