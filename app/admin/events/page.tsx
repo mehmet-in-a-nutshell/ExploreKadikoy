@@ -1,6 +1,6 @@
 import { createClient } from '../../../utils/supabase/server';
 import Link from 'next/link';
-import AdminDeleteButton from '../../../components/AdminDeleteButton';
+import ClientEventTable from './ClientEventTable';
 
 export const revalidate = 0; // Always fetch fresh data in admin
 
@@ -23,60 +23,7 @@ export default async function AdminEventsList() {
                 </Link>
             </div>
 
-            <div style={{ backgroundColor: '#18181b', borderRadius: '0.5rem', overflow: 'hidden', border: '1px solid #27272a' }}>
-                <table style={{ width: '100%', textAlign: 'left', borderCollapse: 'collapse', color: '#e4e4e7' }}>
-                    <thead>
-                        <tr style={{ backgroundColor: '#27272a', borderBottom: '1px solid #3f3f46' }}>
-                            <th style={{ padding: '1rem', fontWeight: 600 }}>Etkinlik Adı</th>
-                            <th style={{ padding: '1rem', fontWeight: 600 }}>Mekan</th>
-                            <th style={{ padding: '1rem', fontWeight: 600 }}>Tarih / Saat</th>
-                            <th style={{ padding: '1rem', fontWeight: 600 }}>Etkinlik Tipi</th>
-                            <th style={{ padding: '1rem', fontWeight: 600 }}>Türü</th>
-                            <th style={{ padding: '1rem', fontWeight: 600, textAlign: 'right' }}>İşlemler</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {(rawEvents || []).map((event: any) => (
-                            <tr key={event.id} style={{ borderBottom: '1px solid #27272a' }}>
-                                <td style={{ padding: '1rem', fontWeight: 500 }}>{event.title}</td>
-                                <td style={{ padding: '1rem', color: '#a1a1aa' }}>{event.venues?.name || '-'}</td>
-                                <td style={{ padding: '1rem', color: '#a1a1aa' }}>{event.date} - {event.time}</td>
-                                <td style={{ padding: '1rem', color: '#c084fc' }}>
-                                    {event.event_type ? (
-                                        <span>
-                                            {event.event_type}
-                                            {event.event_subtype && <span style={{ color: '#a1a1aa', fontSize: '0.875rem' }}> / {event.event_subtype}</span>}
-                                        </span>
-                                    ) : (
-                                        <span style={{ color: '#71717a' }}>-</span>
-                                    )}
-                                </td>
-                                <td style={{ padding: '1rem' }}>
-                                    {event.is_free ? (
-                                        <span style={{ backgroundColor: '#064e3b', color: '#34d399', padding: '0.25rem 0.5rem', borderRadius: '999px', fontSize: '0.75rem' }}>Ücretsiz</span>
-                                    ) : (
-                                        <span style={{ backgroundColor: '#1e3a8a', color: '#93c5fd', padding: '0.25rem 0.5rem', borderRadius: '999px', fontSize: '0.75rem' }}>Biletli</span>
-                                    )}
-                                </td>
-                                <td style={{ padding: '1rem', textAlign: 'right' }}>
-                                    <div style={{ display: 'flex', gap: '1rem', justifyContent: 'flex-end' }}>
-                                        <Link href={`/admin/events/edit/${event.id}`} style={{ color: '#3b82f6', textDecoration: 'none', fontSize: '0.875rem' }}>Düzenle</Link>
-                                        <AdminDeleteButton id={event.id} table="events" title={event.title} />
-                                    </div>
-                                </td>
-                            </tr>
-                        ))}
-
-                        {rawEvents?.length === 0 && (
-                            <tr>
-                                <td colSpan={6} style={{ padding: '2rem', textAlign: 'center', color: '#71717a' }}>
-                                    Henüz hiç etkinlik eklenmemiş.
-                                </td>
-                            </tr>
-                        )}
-                    </tbody>
-                </table>
-            </div>
+            <ClientEventTable initialEvents={rawEvents || []} />
         </div>
     );
 }
