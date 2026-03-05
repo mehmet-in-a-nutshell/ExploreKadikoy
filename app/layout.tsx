@@ -10,7 +10,15 @@ export const metadata: Metadata = {
     default: "Explore Kadıköy - Kadıköy'de Ne Yapılır?",
   },
   icons: {
-    icon: '/icon.svg?v=k_logo_v1',
+    icon: [
+      { url: '/favicon.ico', sizes: 'any' },
+      { url: '/favicon-32x32.png', type: 'image/png', sizes: '32x32' },
+      { url: '/favicon-16x16.png', type: 'image/png', sizes: '16x16' },
+      { url: '/icon.svg?v=k_logo_v1', type: 'image/svg+xml' }
+    ],
+    apple: [
+      { url: '/apple-touch-icon.png' }
+    ],
   },
   description: "Kadıköy'deki güncel etkinlikler, konserler, tiyatrolar, atölyeler ve rehberleri keşfedin.",
   keywords: "kadıköy, etkinlik, konser, tiyatro, istanbul, moda, yel değirmeni",
