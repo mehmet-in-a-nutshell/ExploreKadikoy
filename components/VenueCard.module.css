@@ -76,7 +76,7 @@
     overflow: hidden;
 }
 
-/* COMPACT MODE STYLES (70% / 30% SPLIT for Guides) */
+/* COMPACT MODE STYLES (50% / 50% SPLIT for Guides) */
 .cardCompact {
     display: flex;
     flex-direction: column;
@@ -84,9 +84,10 @@
     overflow: hidden;
     transition: var(--transition-normal);
     cursor: pointer;
-    height: 480px;
-    /* Fixed height for consistent vertical rhythm */
+    height: 400px;
+    /* Fixed height, slightly shorter for a tighter widget look */
     width: 100%;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
 .cardCompact:hover {
@@ -96,7 +97,8 @@
 }
 
 .imageHolderCompact {
-    height: 70%;
+    height: 50%;
+    /* Adjusted to 50% to prevent overflow */
     width: 100%;
     background: var(--bg-tertiary);
     position: relative;
@@ -111,13 +113,15 @@
 }
 
 .contentCompact {
-    height: 30%;
+    height: 50%;
+    /* Remaining 50% for text */
     width: 100%;
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: var(--spacing-md) var(--spacing-lg);
     display: flex;
     flex-direction: column;
     justify-content: center;
-    /* Center content vertically in the 30% space */
-    gap: var(--spacing-xs);
+    gap: var(--spacing-sm);
     background: transparent;
+    overflow: hidden;
+    /* Strict wrap to prevent bleeding */
 }
