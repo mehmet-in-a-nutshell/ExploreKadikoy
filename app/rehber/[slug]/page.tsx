@@ -72,7 +72,7 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
     const contentBlocks = content.split(/(\[MEKAN:[^\]]+\])/g).filter(Boolean);
 
     return (
-        <main style={{ minHeight: '100vh', padding: '6rem 5vw 2rem 5vw', maxWidth: '800px', margin: '0 auto', overflowX: 'hidden' }}>
+        <main style={{ minHeight: '100vh', width: '100%', padding: '6rem 5vw 2rem 5vw', maxWidth: '800px', margin: '0 auto', overflowX: 'hidden' }}>
             {/* Back Button */}
             <Link href="/rehber" style={{ display: 'inline-block', marginBottom: '2rem', color: '#a1a1aa', textDecoration: 'none', transition: 'color 0.2s' }}>
                 &larr; Tüm Rehberlere Dön
