@@ -35,8 +35,8 @@ export default async function UcretsizPage() {
     }));
 
 
-    const events = allCategoryEvents.filter((e: any) => e.date >= today);
-    const pastEvents = allCategoryEvents.filter((e: any) => e.date < today).sort((a: any, b: any) => b.date.localeCompare(a.date));
+    const events = filterDistinctEvents(allCategoryEvents.filter((e: any) => e.date >= today));
+    const pastEvents = filterDistinctEvents(allCategoryEvents.filter((e: any) => e.date < today)).sort((a: any, b: any) => b.date.localeCompare(a.date));
 
     return (
         <main className={styles.main}>

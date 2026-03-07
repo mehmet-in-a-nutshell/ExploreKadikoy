@@ -20,9 +20,7 @@ export default async function SergilerPage() {
         venues:venue_id (name)
     `).gte('date', oneMonthAgo).order('date', { ascending: true });
 
-    const distinctEvents = filterDistinctEvents(rawEvents || []);
-
-    const allCategoryEvents = distinctEvents
+    const allCategoryEvents = (rawEvents || [])
         .filter((e: any) => e.event_subtype === 'Sergi')
         .map((e: any) => ({
             id: e.id,
@@ -39,8 +37,8 @@ export default async function SergilerPage() {
         }));
 
 
-    const events = allCategoryEvents.filter((e: any) => e.date >= today);
-    const pastEvents = allCategoryEvents.filter((e: any) => e.date < today).sort((a: any, b: any) => b.date.localeCompare(a.date));
+    const events = filterDistinctEvents(allCategoryEvents.filter((e: any) => e.date >= today));
+    const pastEvents = filterDistinctEvents(allCategoryEvents.filter((e: any) => e.date < today)).sort((a: any, b: any) => b.date.localeCompare(a.date));
 
     return (
         <main className={styles.main}>
