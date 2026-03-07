@@ -75,3 +75,49 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+/* COMPACT MODE STYLES (70% / 30% SPLIT for Guides) */
+.cardCompact {
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    transition: var(--transition-normal);
+    cursor: pointer;
+    height: 480px;
+    /* Fixed height for consistent vertical rhythm */
+    width: 100%;
+}
+
+.cardCompact:hover {
+    transform: translateY(-4px);
+    border-color: var(--accent-primary);
+    box-shadow: 0 12px 24px rgba(236, 72, 153, 0.15);
+}
+
+.imageHolderCompact {
+    height: 70%;
+    width: 100%;
+    background: var(--bg-tertiary);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.cardCompact:hover .image {
+    transform: scale(1.05);
+}
+
+.contentCompact {
+    height: 30%;
+    width: 100%;
+    padding: var(--spacing-sm) var(--spacing-md);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Center content vertically in the 30% space */
+    gap: var(--spacing-xs);
+    background: transparent;
+}

@@ -27,9 +27,9 @@ export default function VenueCard({
     compact = false,
 }: VenueCardProps) {
     return (
-        <div style={{ position: 'relative' }}>
-            <Link href={`/mekan/${slug}`} className={`${styles.card} glass`}>
-                <div className={styles.imageHolder}>
+        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+            <Link href={`/mekan/${slug}`} className={`${compact ? styles.cardCompact : styles.card} glass`}>
+                <div className={compact ? styles.imageHolderCompact : styles.imageHolder}>
                     {imageUrl ? (
                         <Image src={imageUrl} alt={name} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className={styles.image} />
                     ) : (
@@ -37,10 +37,10 @@ export default function VenueCard({
                     )}
                 </div>
 
-                <div className={styles.content}>
+                <div className={compact ? styles.contentCompact : styles.content}>
                     <div className={styles.header}>
                         <span className={styles.neighborhoodBadge}>{neighborhood}</span>
-                        <h3 className={styles.title}>{name}</h3>
+                        <h3 className={styles.title} style={{ fontSize: compact ? '1.125rem' : '1.25rem' }}>{name}</h3>
                     </div>
 
                     {venue_type && (
