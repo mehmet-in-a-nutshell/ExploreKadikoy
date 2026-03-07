@@ -52,7 +52,7 @@ export default function VenueCard({
                     {!compact && <p className={styles.description}>{description}</p>}
 
                     {rating && (
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: 'auto', paddingTop: '0.5rem', color: '#fbbf24', fontSize: '0.875rem', fontWeight: 600 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: compact ? '0.25rem' : 'auto', paddingTop: compact ? '0' : '0.5rem', color: '#fbbf24', fontSize: '0.875rem', fontWeight: 600 }}>
                             <span>⭐</span> {rating}
                         </div>
                     )}

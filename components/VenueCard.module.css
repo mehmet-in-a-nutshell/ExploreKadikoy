@@ -116,11 +116,13 @@
     height: 50%;
     /* Remaining 50% for text */
     width: 100%;
-    padding: var(--spacing-md) var(--spacing-lg);
+    padding: var(--spacing-sm) var(--spacing-lg);
+    /* Reduced top/bottom padding to keep it centered tightly */
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: var(--spacing-sm);
+    gap: 0.25rem;
+    /* Very tight gap between text elements */
     background: transparent;
     overflow: hidden;
     /* Strict wrap to prevent bleeding */
