@@ -8,16 +8,19 @@ export const metadata = {
 
 import { supabase } from '../../utils/supabase';
 import { filterDistinctEvents } from '../../utils/eventFilter';
+import { format, subMonths } from 'date-fns';
 
 export const revalidate = 60; // Refresh cache every 60 seconds
 
 export default async function UcretsizPage() {
+    const today = format(new Date(), 'yyyy-MM-dd');
+    const oneMonthAgo = format(subMonths(new Date(), 1), 'yyyy-MM-dd');
     const { data: rawEvents } = await supabase.from('events').select(`
         id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
         venues:venue_id (name)
-    `).eq('is_free', true).order('created_at', { ascending: false });
+    `).eq('is_free', true).gte('date', oneMonthAgo).order('created_at', { ascending: false });
 
-    const events = (rawEvents || []).map((e: any) => ({
+    const allCategoryEvents = (rawEvents || []).map((e: any) => ({
         id: e.id,
         title: e.title,
         slug: e.slug,
@@ -30,6 +33,10 @@ export default async function UcretsizPage() {
         eventType: e.event_type || 'Diğer',
         eventSubtype: e.event_subtype || ''
     }));
+
+
+    const events = allCategoryEvents.filter((e: any) => e.date >= today);
+    const pastEvents = allCategoryEvents.filter((e: any) => e.date < today).sort((a: any, b: any) => b.date.localeCompare(a.date));
 
     return (
         <main className={styles.main}>
@@ -46,11 +53,30 @@ export default async function UcretsizPage() {
                 </div>
 
                 <div className={styles.grid}>
-                    {events.map((evt) => (
+                    {events.map((evt: any) => (
                         <EventCard key={evt.id} {...evt} />
                     ))}
                 </div>
             </section>
+
+            {pastEvents.length > 0 && (
+                <section className={styles.results} style={{ marginTop: '3rem', borderTop: '1px solid var(--border-color)', paddingTop: '3rem' }}>
+                    <div className={styles.headerContent}>
+                        <h2 className={styles.title} style={{ fontSize: '2rem' }}>Tamamlanan Etkinlikler</h2>
+                        <p className={styles.subtitle}>Son 1 ay içinde gerçekleşen etkinlikler.</p>
+                    </div>
+
+                    <div className={styles.resultsInfo} style={{ marginTop: '1.5rem' }}>
+                        <p><span>{pastEvents.length} ücretsiz etkinlik</span> bulundu</p>
+                    </div>
+
+                    <div className={styles.grid}>
+                        {pastEvents.map((evt: any) => (
+                            <EventCard key={evt.id} {...evt} />
+                        ))}
+                    </div>
+                </section>
+            )}
         </main>
     );
 }
