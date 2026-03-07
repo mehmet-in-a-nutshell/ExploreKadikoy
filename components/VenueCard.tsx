@@ -12,6 +12,7 @@ export interface VenueCardProps {
     slug: string;
     rating?: number;
     venue_type?: string;
+    compact?: boolean;
 }
 
 export default function VenueCard({
@@ -23,6 +24,7 @@ export default function VenueCard({
     slug,
     rating,
     venue_type,
+    compact = false,
 }: VenueCardProps) {
     return (
         <div style={{ position: 'relative' }}>
@@ -47,7 +49,7 @@ export default function VenueCard({
                         </div>
                     )}
 
-                    <p className={styles.description}>{description}</p>
+                    {!compact && <p className={styles.description}>{description}</p>}
 
                     {rating && (
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: 'auto', paddingTop: '0.5rem', color: '#fbbf24', fontSize: '0.875rem', fontWeight: 600 }}>

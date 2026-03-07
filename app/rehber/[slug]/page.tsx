@@ -117,8 +117,8 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
                             const venue = venuesRecord[slug];
                             if (venue) {
                                 return (
-                                    <div key={i} style={{ margin: '3rem 0', padding: '1rem', backgroundColor: 'rgba(99, 102, 241, 0.05)', borderRadius: '1rem', border: '1px solid rgba(99, 102, 241, 0.1)' }}>
-                                        <div style={{ marginBottom: '1rem', fontSize: '0.875rem', color: '#818cf8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>📌 Rehberin Önerisi</div>
+                                    <div key={i} style={{ margin: '3rem auto', maxWidth: '400px' }}>
+                                        <div style={{ marginBottom: '0.75rem', fontSize: '0.875rem', color: '#818cf8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'center' }}>📌 Rehberin Önerisi</div>
                                         <VenueCard
                                             id={venue.id}
                                             name={venue.name}
@@ -128,6 +128,7 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
                                             imageUrl={venue.cover_image}
                                             rating={venue.rating}
                                             venue_type={venue.venue_type}
+                                            compact={true}
                                         />
                                     </div>
                                 );
