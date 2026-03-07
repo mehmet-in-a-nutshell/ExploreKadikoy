@@ -21,7 +21,7 @@ export default async function TiyatroPage() {
     `).gte('date', oneMonthAgo).order('date', { ascending: true });
 
     const allCategoryEvents = (rawEvents || [])
-        .filter((e: any) => e.event_type === '🎭 Sahne Sanatları' || e.event_subtype === 'Tiyatro')
+        .filter((e: any) => e.event_type === '🎭 Sahne Sanatları' && e.event_subtype?.includes('Tiyatro'))
         .map((e: any) => ({
             id: e.id,
             title: e.title,
@@ -29,7 +29,7 @@ export default async function TiyatroPage() {
             date: e.date,
             time: e.time,
             isFree: e.is_free,
-        isRecurring: e.isRecurring,
+            isRecurring: e.isRecurring,
             imageUrl: e.cover_image,
             venue: e.venues?.name || 'Kadıköy',
             eventType: e.event_type || '🎭 Sahne Sanatları',
