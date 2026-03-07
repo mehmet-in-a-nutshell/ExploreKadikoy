@@ -84,8 +84,8 @@
     overflow: hidden;
     transition: var(--transition-normal);
     cursor: pointer;
-    height: 400px;
-    /* Fixed height, slightly shorter for a tighter widget look */
+    height: 460px;
+    /* Fixed height, slightly taller to match wider width */
     width: 100%;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }

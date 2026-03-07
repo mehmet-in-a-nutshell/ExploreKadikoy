@@ -117,7 +117,7 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
                             const venue = venuesRecord[slug];
                             if (venue) {
                                 return (
-                                    <div key={i} style={{ margin: '3rem auto', maxWidth: '400px' }}>
+                                    <div key={i} style={{ margin: '3.5rem auto', maxWidth: '550px' }}>
                                         <div style={{ marginBottom: '0.75rem', fontSize: '0.875rem', color: '#818cf8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em', textAlign: 'center' }}>📌 Rehberin Önerisi</div>
                                         <VenueCard
                                             id={venue.id}
