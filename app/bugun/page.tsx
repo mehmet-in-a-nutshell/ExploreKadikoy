@@ -13,6 +13,7 @@ import { format, addDays, subMonths } from 'date-fns';
 import { EVENT_TAXONOMY } from '../../utils/taxonomies';
 import { filterDistinctEvents } from '../../utils/eventFilter';
 import Link from 'next/link';
+import SortSelect from '../../components/SortSelect';
 
 export default async function BugunPage({
     searchParams,
@@ -94,6 +95,26 @@ export default async function BugunPage({
         pastEventsToDisplay = pastEventsToDisplay.filter(e => e.isFree);
     }
 
+    // Read current sort
+    const currentSort = params.sort || 'Yaklaşanlar';
+
+    // Apply sorting
+    if (currentSort === 'A-Z') {
+        eventsToDisplay.sort((a, b) => a.title.localeCompare(b.title, 'tr'));
+        pastEventsToDisplay.sort((a, b) => a.title.localeCompare(b.title, 'tr'));
+    } else if (currentSort === 'Ücretsizler Önce') {
+        eventsToDisplay.sort((a, b) => {
+            if (a.isFree && !b.isFree) return -1;
+            if (!a.isFree && b.isFree) return 1;
+            return a.date.localeCompare(b.date) || a.time.localeCompare(b.time);
+        });
+        pastEventsToDisplay.sort((a, b) => {
+            if (a.isFree && !b.isFree) return -1;
+            if (!a.isFree && b.isFree) return 1;
+            return b.date.localeCompare(a.date) || b.time.localeCompare(a.time);
+        });
+    }
+
     return (
         <main className={styles.main}>
             <header className={styles.header}>
@@ -127,6 +148,9 @@ export default async function BugunPage({
             <section className={styles.results}>
                 <div className={styles.resultsInfo}>
                     <p><span>{eventsToDisplay.length} etkinlik</span> bulundu</p>
+                    <div className={styles.sort}>
+                        <SortSelect currentSort={currentSort} className={styles.select} />
+                    </div>
                 </div>
 
                 <div className={styles.grid}>

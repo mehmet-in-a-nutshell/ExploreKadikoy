@@ -1,6 +1,7 @@
 import EventCard from '../../components/EventCard';
 import styles from './page.module.css';
 import Link from 'next/link';
+import SortSelect from '../../components/SortSelect';
 
 import { supabase } from '../../utils/supabase';
 
@@ -95,6 +96,23 @@ export default async function EtkinliklerPage({
         pastEvents = pastEvents.filter(e => e.isFree);
     }
 
+    // Apply sorting
+    if (currentSort === 'A-Z') {
+        events.sort((a, b) => a.title.localeCompare(b.title, 'tr'));
+        pastEvents.sort((a, b) => a.title.localeCompare(b.title, 'tr'));
+    } else if (currentSort === 'Ücretsizler Önce') {
+        events.sort((a, b) => {
+            if (a.isFree && !b.isFree) return -1;
+            if (!a.isFree && b.isFree) return 1;
+            return a.date.localeCompare(b.date) || a.time.localeCompare(b.time);
+        });
+        pastEvents.sort((a, b) => {
+            if (a.isFree && !b.isFree) return -1;
+            if (!a.isFree && b.isFree) return 1;
+            return b.date.localeCompare(a.date) || b.time.localeCompare(a.time);
+        });
+    }
+
     return (
         <main className={styles.main}>
             <header className={styles.header}>
@@ -132,11 +150,7 @@ export default async function EtkinliklerPage({
                 <div className={styles.resultsInfo}>
                     <p><span>{events.length} etkinlik</span> bulundu</p>
                     <div className={styles.sort}>
-                        <select className={styles.select} defaultValue={currentSort}>
-                            <option value="Yaklaşanlar">Yaklaşanlar</option>
-                            <option value="Ücretsizler Önce">Ücretsizler Önce</option>
-                            <option value="A-Z">A-Z</option>
-                        </select>
+                        <SortSelect currentSort={currentSort} className={styles.select} />
                     </div>
                 </div>
 
