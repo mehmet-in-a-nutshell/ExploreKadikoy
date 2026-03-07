@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: ['/admin/', '/auth/', '/api/', '/profile/'],
         },
-        sitemap: 'https://explorekadikoy.com/sitemap.xml',
+        sitemap: 'https://www.explorekadikoy.com/sitemap.xml',
     };
 }

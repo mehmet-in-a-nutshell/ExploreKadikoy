@@ -4,7 +4,7 @@ import Footer from "../components/Footer";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  metadataBase: new URL('https://explorekadikoy.com'),
+  metadataBase: new URL('https://www.explorekadikoy.com'),
   title: {
     template: '%s | Explore Kadıköy',
     default: "Explore Kadıköy - Kadıköy'de Ne Yapılır?",
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Explore Kadıköy - Kadıköy'de Ne Yapılır?",
     description: "Kadıköy'deki güncel etkinlikler, konserler, tiyatrolar ve atölyeleri keşfedin.",
-    url: 'https://explorekadikoy.com',
+    url: 'https://www.explorekadikoy.com',
     siteName: 'Explore Kadıköy',
     locale: 'tr_TR',
     type: 'website',

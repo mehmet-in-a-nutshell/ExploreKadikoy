@@ -3,7 +3,7 @@ import { createClient } from '../utils/supabase/server';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const supabase = await createClient();
-    const baseUrl = 'https://explorekadikoy.com';
+    const baseUrl = 'https://www.explorekadikoy.com';
 
     // Fetch dynamic content
     const [eventsResult, venuesResult, guidesResult] = await Promise.all([
