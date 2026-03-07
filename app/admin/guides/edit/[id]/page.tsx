@@ -66,6 +66,11 @@ export default function EditGuidePage({ params }: { params: Promise<{ id: string
         <div style={{ maxWidth: '800px' }}>
             <h1 style={{ fontSize: '1.5rem', fontWeight: 'bold', color: 'white', marginBottom: '2rem' }}>Rehberi Düzenle</h1>
 
+            <div style={{ fontSize: '0.875rem', color: '#a1a1aa', marginBottom: '1.5rem', backgroundColor: 'rgba(99, 102, 241, 0.1)', padding: '0.75rem', borderRadius: '0.5rem', border: '1px solid rgba(99, 102, 241, 0.2)' }}>
+                <strong style={{ color: '#818cf8' }}>💡 İpucu:</strong> İçeriğe resim eklemek için şu formatı kullanın: <code>![Resim Açıklaması](resim_linki)</code>.<br />
+                <strong style={{ color: '#818cf8', display: 'inline-block', marginTop: '0.5rem' }}>🔥 İpucu (Mekan Kartı):</strong> Yazının ortasında şık bir mekan kartı göstermek için, mekanın URL uzantısını (slug) kullanarak yeni bir satıra <code>[MEKAN:mekan-slugu]</code> yazın. Örneğin: <code>[MEKAN:karga-kadikoy]</code>
+            </div>
+
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', backgroundColor: '#18181b', padding: '2rem', borderRadius: '0.5rem', border: '1px solid #27272a' }}>
 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>

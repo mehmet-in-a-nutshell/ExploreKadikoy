@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
+import VenueCard from '../../../components/VenueCard';
 import remarkGfm from 'remark-gfm';
 import { Metadata } from 'next';
 
@@ -47,6 +48,27 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
         notFound();
     }
 
+    // Extract all venue slugs from the markdown content: [MEKAN:dorock-xl]
+    const content = guide.content || '';
+    const venueSlugsMatch = Array.from(content.matchAll(/\[MEKAN:([^\]]+)\]/g));
+    const venueSlugs = venueSlugsMatch.map((m: any) => m[1]);
+
+    let venuesRecord: Record<string, any> = {};
+
+    if (venueSlugs.length > 0) {
+        const { data: venuesData } = await supabase
+            .from('venues')
+            .select('*')
+            .in('slug', venueSlugs);
+
+        if (venuesData) {
+            venuesRecord = Object.fromEntries(venuesData.map((v: any) => [v.slug, v]));
+        }
+    }
+
+    // Split content into blocks of plain text and venue shortcodes
+    const contentBlocks = content.split(/(\[MEKAN:[^\]]+\])/g).filter(Boolean);
+
     return (
         <main style={{ minHeight: '100vh', padding: '6rem 5vw 2rem 5vw', maxWidth: '800px', margin: '0 auto', overflowX: 'hidden' }}>
             {/* Back Button */}
@@ -85,8 +107,35 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
 
             {/* Content Body */}
             <div className="markdown-content" style={{ color: '#d4d4d8', lineHeight: 1.8, fontSize: '1.125rem' }}>
-                {guide.content ? (
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>{guide.content}</ReactMarkdown>
+                {contentBlocks.length > 0 ? (
+                    contentBlocks.map((block: string, i: number) => {
+                        const match = block.match(/^\[MEKAN:([^\]]+)\]$/);
+                        if (match) {
+                            const slug = match[1];
+                            const venue = venuesRecord[slug];
+                            if (venue) {
+                                return (
+                                    <div key={i} style={{ margin: '3rem 0', padding: '1rem', backgroundColor: 'rgba(99, 102, 241, 0.05)', borderRadius: '1rem', border: '1px solid rgba(99, 102, 241, 0.1)' }}>
+                                        <div style={{ marginBottom: '1rem', fontSize: '0.875rem', color: '#818cf8', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>📌 Rehberin Önerisi</div>
+                                        <VenueCard
+                                            id={venue.id}
+                                            name={venue.name}
+                                            neighborhood={venue.neighborhood || 'Kadıköy'}
+                                            description={venue.description || ''}
+                                            slug={venue.slug}
+                                            imageUrl={venue.cover_image}
+                                            rating={venue.rating}
+                                            venue_type={venue.venue_type}
+                                        />
+                                    </div>
+                                );
+                            }
+                            return <div key={i} style={{ color: '#f87171', fontStyle: 'italic', margin: '1rem 0' }}>[Mekan bulunamadı: {slug}]</div>;
+                        }
+
+                        // Regular markdown text
+                        return <ReactMarkdown key={i} remarkPlugins={[remarkGfm]}>{block}</ReactMarkdown>;
+                    })
                 ) : (
                     <div style={{ backgroundColor: '#18181b', padding: '2rem', borderRadius: '0.75rem', textAlign: 'center', border: '1px dashed #3f3f46' }}>
                         <p style={{ color: '#71717a', fontStyle: 'italic' }}>Bu rehberin detay içeriği henüz hazırlanmamıştır, yakında eklenecektir.</p>
