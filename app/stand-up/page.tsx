@@ -2,8 +2,8 @@ import EventCard from '../../components/EventCard';
 import styles from '../etkinlikler/page.module.css';
 
 export const metadata = {
-    title: 'Kadıköy Tadım Etkinlikleri - ExploreKadikoy',
-    description: 'Kadıköy\'deki lezzet dolu gastronomi ve tadım etkinliklerini keşfedin.',
+    title: 'Kadıköy Stand-up Gösterileri - ExploreKadikoy',
+    description: 'Kadıköy sahnelerindeki en eğlenceli stand-up performanslarını keşfedin.',
 };
 
 import { supabase } from '../../utils/supabase';
@@ -12,7 +12,7 @@ import { format, subMonths } from 'date-fns';
 
 export const revalidate = 60;
 
-export default async function TadimPage() {
+export default async function StandUpPage() {
     const today = format(new Date(), 'yyyy-MM-dd');
     const oneMonthAgo = format(subMonths(new Date(), 1), 'yyyy-MM-dd');
     const { data: rawEvents } = await supabase.from('events').select(`
@@ -21,7 +21,7 @@ export default async function TadimPage() {
     `).gte('date', oneMonthAgo).order('date', { ascending: true });
 
     const allCategoryEvents = (rawEvents || [])
-        .filter((e: any) => e.event_subtype === 'Tadım etkinliği')
+        .filter((e: any) => e.event_subtype?.toLowerCase().includes('stand'))
         .map((e: any) => ({
             id: e.id,
             title: e.title,
@@ -29,10 +29,10 @@ export default async function TadimPage() {
             date: e.date,
             time: e.time,
             isFree: e.is_free,
-        isRecurring: e.isRecurring,
+            isRecurring: e.isRecurring,
             imageUrl: e.cover_image,
             venue: e.venues?.name || 'Kadıköy',
-            eventType: e.event_type || '🍽️ Gastronomi',
+            eventType: e.event_type || '😂 Komedi',
             eventSubtype: e.event_subtype || ''
         }));
 
@@ -44,8 +44,8 @@ export default async function TadimPage() {
         <main className={styles.main}>
             <header className={styles.header}>
                 <div className={styles.headerContent}>
-                    <h1 className={styles.title}>Tadım Etkinlikleri</h1>
-                    <p className={styles.subtitle}>Gastronomi dünyasında yeni lezzetler keşfedin.</p>
+                    <h1 className={styles.title}>Stand-up Gösterileri</h1>
+                    <p className={styles.subtitle}>Kahkaha dolu anlar ve kesintisiz komedi.</p>
                 </div>
             </header>
 
@@ -69,7 +69,7 @@ export default async function TadimPage() {
                     </div>
 
                     <div className={styles.resultsInfo} style={{ marginTop: '1.5rem' }}>
-                        <p><span>{pastEvents.length} tadım etkinliği</span> bulundu</p>
+                        <p><span>{pastEvents.length} stand-up gösterisi</span> bulundu</p>
                     </div>
 
                     <div className={styles.grid}>

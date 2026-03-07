@@ -59,7 +59,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         '/quiz-night',
         '/yoga',
         '/dans',
-        '/tadim-etkinligi',
+        '/stand-up',
         '/bit-pazari'
     ].map((route) => ({
         url: `${baseUrl}${route}`,

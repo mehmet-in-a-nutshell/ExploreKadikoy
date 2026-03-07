@@ -83,7 +83,7 @@ export default async function Home() {
           <Link href="/dans" className={styles.quickFilterBtn}>💃 Dans</Link>
           <Link href="/spor" className={styles.quickFilterBtn}>🏃 Spor</Link>
           <Link href="/oyun-gecesi" className={styles.quickFilterBtn}>🎲 Oyun gecesi</Link>
-          <Link href="/tadim-etkinligi" className={styles.quickFilterBtn}>🍷 Tadım etkinliği</Link>
+          <Link href="/stand-up" className={styles.quickFilterBtn}>🎤 Stand-up</Link>
           <Link href="/bit-pazari" className={styles.quickFilterBtn}>🛍️ Bit pazarı</Link>
         </div>
       </div>
