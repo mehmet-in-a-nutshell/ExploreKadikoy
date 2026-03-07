@@ -49,7 +49,9 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
     }
 
     // Extract all venue slugs from the markdown content: [MEKAN:dorock-xl]
-    const content = guide.content || '';
+    // Replace Non-Breaking Spaces (NBSP) with regular spaces, as macOS often inserts them 
+    // and they break Markdown heading parsing (e.g. "## Title").
+    const content = (guide.content || '').replace(/\u00A0/g, ' ');
     const venueSlugsMatch = Array.from(content.matchAll(/\[MEKAN:([^\]]+)\]/g));
     const venueSlugs = venueSlugsMatch.map((m: any) => m[1]);
 
