@@ -134,7 +134,9 @@ export default async function GuideDetailPage({ params }: { params: Promise<{ sl
                         }
 
                         // Regular markdown text
-                        return <ReactMarkdown key={i} remarkPlugins={[remarkGfm]}>{block}</ReactMarkdown>;
+                        // We wrap text blocks in artificial newlines to ensure any Markdown 
+                        // elements like Headings (##) at the start/end of the block are parsed properly.
+                        return <ReactMarkdown key={i} remarkPlugins={[remarkGfm]}>{`\n\n${block}\n\n`}</ReactMarkdown>;
                     })
                 ) : (
                     <div style={{ backgroundColor: '#18181b', padding: '2rem', borderRadius: '0.75rem', textAlign: 'center', border: '1px dashed #3f3f46' }}>
