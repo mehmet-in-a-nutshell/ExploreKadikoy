@@ -53,13 +53,16 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
     }
 
     // Fetch events happening at this venue
+    const today = new Date().toISOString().split('T')[0];
     const { data: rawEvents } = await supabase
         .from('events')
         .select(`
             id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype
         `)
         .eq('venue_id', venue.id)
-        .order('created_at', { ascending: false });
+        .gte('date', today)
+        .order('date', { ascending: true })
+        .order('time', { ascending: true });
 
     const venueEvents = (rawEvents || []).map((e: any) => ({
         id: e.id,
