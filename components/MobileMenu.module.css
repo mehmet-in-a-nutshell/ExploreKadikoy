@@ -140,7 +140,8 @@
 
 .loginBtn,
 .registerBtn,
-.logoutBtn {
+.logoutBtn,
+.profileBtn {
     display: block;
     width: 100%;
     text-align: center;
@@ -161,6 +162,13 @@
     background: var(--text-primary);
     color: var(--bg-primary);
     border: none;
+}
+
+.profileBtn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+    margin-bottom: var(--spacing-sm);
 }
 
 .logoutBtn {

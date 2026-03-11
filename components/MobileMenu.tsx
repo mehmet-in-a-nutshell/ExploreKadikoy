@@ -79,9 +79,8 @@ export default function MobileMenu({ user }: MobileMenuProps) {
                         <>
                             {user.email?.toLowerCase() === 'admin@explorekadikoy.com' ? (
                                 <Link href="/admin" className={styles.drawerNavLink} style={{ fontWeight: 'bold', color: 'var(--accent-primary)', marginBottom: '1rem', display: 'block' }}>Admin Paneli</Link>
-                            ) : (
-                                <Link href="/profile" className={styles.drawerNavLink} style={{ fontWeight: 'bold', color: 'white', marginBottom: '1rem', display: 'block' }}>Profilim</Link>
-                            )}
+                            ) : null}
+                            <Link href="/profile" className={styles.profileBtn}>Profilim</Link>
                             <form action="/auth/logout" method="post">
                                 <button type="submit" className={styles.logoutBtn}>Çıkış Yap</button>
                             </form>
