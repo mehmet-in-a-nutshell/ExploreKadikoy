@@ -42,7 +42,7 @@ export default async function ProfilePage() {
                     date: e.date,
                     time: e.time,
                     isFree: e.is_free,
-        isRecurring: e.isRecurring,
+                    isRecurring: e.isRecurring,
                     imageUrl: e.cover_image,
                     venue: venues?.name || 'Kadıköy',
                     eventType: e.event_type || 'Diğer',
@@ -89,11 +89,6 @@ export default async function ProfilePage() {
                             <p style={{ color: 'var(--text-secondary)' }}>Hoş geldiniz, {user.email || 'Kullanıcı'}</p>
                         </div>
 
-                        <form action="/auth/logout" method="post">
-                            <button type="submit" style={{ padding: '0.75rem 1.5rem', backgroundColor: '#ef4444', color: 'white', border: 'none', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 'bold', transition: 'background-color 0.2s' }}>
-                                Çıkış Yap
-                            </button>
-                        </form>
                     </div>
 
                     {/* Favorites Section */}
@@ -139,6 +134,24 @@ export default async function ProfilePage() {
                             )}
                         </section>
                     </div>
+
+                    {/* Logout Button at the bottom */}
+                    <div style={{ marginTop: '4rem', textAlign: 'center', borderTop: '1px solid #27272a', paddingTop: '3rem' }}>
+                        <form action="/auth/logout" method="post">
+                            <button type="submit" style={{ padding: '0.75rem 2rem', backgroundColor: 'transparent', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 'bold', transition: 'all 0.2s', fontSize: '1rem' }}
+                                onMouseOver={(e) => {
+                                    e.currentTarget.style.backgroundColor = '#ef4444';
+                                    e.currentTarget.style.color = 'white';
+                                }}
+                                onMouseOut={(e) => {
+                                    e.currentTarget.style.backgroundColor = 'transparent';
+                                    e.currentTarget.style.color = '#ef4444';
+                                }}>
+                                Güvenli Çıkış Yap
+                            </button>
+                        </form>
+                    </div>
+
 
                 </div>
             </main>
