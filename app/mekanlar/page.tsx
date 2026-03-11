@@ -8,7 +8,6 @@ export const metadata = {
 };
 
 import { supabase } from '../../utils/supabase';
-import { createClient } from '../../utils/supabase/server';
 
 export const revalidate = 60; // Refresh cache every 60 seconds
 
@@ -30,9 +29,6 @@ export default async function MekanlarPage({
     const params = await searchParams;
     const activeType = params.type || null;
 
-    const supabaseServer = await createClient();
-    const { data: { user } } = await supabaseServer.auth.getUser();
-
     let query = supabase.from('venues').select('id, name, slug, neighborhood, description, cover_image, rating, venue_type').order('created_at', { ascending: false });
 
     if (activeType) {
@@ -40,17 +36,6 @@ export default async function MekanlarPage({
     }
 
     const { data: rawVenues } = await query;
-
-    let likedVenueIds = new Set<string>();
-    if (user) {
-        const { data: likes } = await supabaseServer
-            .from('user_favorite_venues')
-            .select('venue_id')
-            .eq('user_id', user.id);
-        if (likes) {
-            likes.forEach(like => likedVenueIds.add(like.venue_id));
-        }
-    }
 
     const venues = (rawVenues || []).map((v: any) => ({
         id: v.id,
@@ -60,8 +45,7 @@ export default async function MekanlarPage({
         slug: v.slug,
         imageUrl: v.cover_image,
         rating: v.rating,
-        venue_type: v.venue_type,
-        initialIsFavorite: likedVenueIds.has(v.id)
+        venue_type: v.venue_type
     }));
 
     return (

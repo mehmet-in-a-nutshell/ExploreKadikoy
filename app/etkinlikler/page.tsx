@@ -4,7 +4,6 @@ import Link from 'next/link';
 import SortSelect from '../../components/SortSelect';
 
 import { supabase } from '../../utils/supabase';
-import { createClient } from '../../utils/supabase/server';
 
 export const metadata = {
     title: 'Tüm Etkinlikler - ExploreKadikoy',
@@ -25,9 +24,6 @@ export default async function EtkinliklerPage({
     const today = format(new Date(), 'yyyy-MM-dd');
     const oneMonthAgo = format(subMonths(new Date(), 1), 'yyyy-MM-dd');
 
-    const supabaseServer = await createClient();
-    const { data: { user } } = await supabaseServer.auth.getUser();
-
     const [upcomingResult, pastResult] = await Promise.all([
         supabase.from('events').select(`
             id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
@@ -43,17 +39,6 @@ export default async function EtkinliklerPage({
     const distinctEvents = filterDistinctEvents(upcomingResult.data || []);
     const distinctPastEvents = filterDistinctEvents(pastResult.data || []);
 
-    let likedEventIds = new Set<string>();
-    if (user) {
-        const { data: likes } = await supabaseServer
-            .from('user_favorite_events')
-            .select('event_id')
-            .eq('user_id', user.id);
-        if (likes) {
-            likes.forEach(like => likedEventIds.add(like.event_id));
-        }
-    }
-
     const allEvents = distinctEvents.map((e: any) => ({
         id: e.id,
         title: e.title,
@@ -65,8 +50,7 @@ export default async function EtkinliklerPage({
         imageUrl: e.cover_image,
         venue: e.venues?.name || 'Kadıköy',
         eventType: e.event_type || 'Diğer',
-        eventSubtype: e.event_subtype || '',
-        initialIsFavorite: likedEventIds.has(e.id)
+        eventSubtype: e.event_subtype || ''
     }));
 
     const allPastEvents = distinctPastEvents.map((e: any) => ({
@@ -80,8 +64,7 @@ export default async function EtkinliklerPage({
         imageUrl: e.cover_image,
         venue: e.venues?.name || 'Kadıköy',
         eventType: e.event_type || 'Diğer',
-        eventSubtype: e.event_subtype || '',
-        initialIsFavorite: likedEventIds.has(e.id)
+        eventSubtype: e.event_subtype || ''
     }));
 
     // Read current searchParams
