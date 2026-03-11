@@ -6,6 +6,7 @@ import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import AddToCalendar from '../../../components/AddToCalendar';
+import FavoriteButton from '../../../components/FavoriteButton';
 import { format, parseISO } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { Metadata } from 'next';
@@ -56,6 +57,17 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
 
     if (!event) {
         notFound();
+    }
+
+    let initialIsFavorite = false;
+    if (user) {
+        const { data: fv } = await supabaseServer
+            .from('user_favorite_events')
+            .select('id')
+            .eq('user_id', user.id)
+            .eq('event_id', event.id)
+            .single();
+        if (fv) initialIsFavorite = true;
     }
 
     // Check if this is a recurring event by searching for future events with the exact same title
@@ -130,6 +142,8 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                             {event.venues.neighborhood && <span style={{ color: '#a1a1aa' }}>({event.venues.neighborhood})</span>}
                         </div>
                     )}
+
+                    <FavoriteButton type="event" itemId={event.id} variant="inline" initialIsFavorite={initialIsFavorite} />
 
                     <AddToCalendar event={{
                         title: event.title,

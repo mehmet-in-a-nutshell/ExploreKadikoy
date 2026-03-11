@@ -8,9 +8,10 @@ interface FavoriteButtonProps {
     type: 'event' | 'venue';
     itemId: string;
     initialIsFavorite?: boolean;
+    variant?: 'floating' | 'inline';
 }
 
-export default function FavoriteButton({ type, itemId, initialIsFavorite }: FavoriteButtonProps) {
+export default function FavoriteButton({ type, itemId, initialIsFavorite, variant = 'floating' }: FavoriteButtonProps) {
     const [isFavorite, setIsFavorite] = useState(initialIsFavorite || false);
     const [loading, setLoading] = useState(initialIsFavorite === undefined);
     const [user, setUser] = useState<any>(null);
@@ -80,6 +81,42 @@ export default function FavoriteButton({ type, itemId, initialIsFavorite }: Favo
 
     if (loading) {
         return <div style={{ width: '32px', height: '32px' }} />; // placeholder
+    }
+
+    if (variant === 'inline') {
+        return (
+            <button
+                onClick={toggleFavorite}
+                aria-label={isFavorite ? "Favorilerden Çıkar" : "Favorilere Ekle"}
+                style={{
+                    width: '100%',
+                    backgroundColor: isFavorite ? 'rgba(236, 72, 153, 0.15)' : '#18181b',
+                    color: isFavorite ? '#ec4899' : '#a1a1aa',
+                    padding: '0.75rem 1rem',
+                    borderRadius: '0.5rem',
+                    border: isFavorite ? '1px solid rgba(236, 72, 153, 0.5)' : '1px solid rgba(236, 72, 153, 0.2)',
+                    fontSize: '0.875rem',
+                    fontWeight: 600,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.5rem',
+                    transition: 'all 0.2s',
+                    marginTop: '1rem'
+                }}
+                onMouseOver={(e) => {
+                    e.currentTarget.style.backgroundColor = isFavorite ? 'rgba(236, 72, 153, 0.25)' : '#27272a';
+                    e.currentTarget.style.color = isFavorite ? '#f472b6' : 'white';
+                }}
+                onMouseOut={(e) => {
+                    e.currentTarget.style.backgroundColor = isFavorite ? 'rgba(236, 72, 153, 0.15)' : '#18181b';
+                    e.currentTarget.style.color = isFavorite ? '#ec4899' : '#a1a1aa';
+                }}
+            >
+                {isFavorite ? '❤️ Favorilerimde' : '🤍 Favorilere Ekle'}
+            </button>
+        );
     }
 
     return (

@@ -4,6 +4,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import EventCard from '../../../components/EventCard';
+import FavoriteButton from '../../../components/FavoriteButton';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { Metadata } from 'next';
@@ -50,6 +51,17 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
 
     if (!venue) {
         notFound();
+    }
+
+    let initialIsFavorite = false;
+    if (user) {
+        const { data: fv } = await supabaseServer
+            .from('user_favorite_venues')
+            .select('id')
+            .eq('user_id', user.id)
+            .eq('venue_id', venue.id)
+            .single();
+        if (fv) initialIsFavorite = true;
     }
 
     // Fetch events happening at this venue
@@ -122,6 +134,10 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
                         ) : (
                             <p style={{ color: '#71717a', fontStyle: 'italic' }}>Bu mekan için henüz bir açıklama eklenmemiş.</p>
                         )}
+                    </div>
+
+                    <div style={{ marginTop: '1.5rem', alignSelf: 'flex-start', minWidth: '250px' }}>
+                        <FavoriteButton type="venue" itemId={venue.id} variant="inline" initialIsFavorite={initialIsFavorite} />
                     </div>
                 </div>
             </div>
