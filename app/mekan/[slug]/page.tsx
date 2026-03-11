@@ -53,17 +53,6 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
         notFound();
     }
 
-    let initialIsFavorite = false;
-    if (user) {
-        const { data: fv } = await supabaseServer
-            .from('user_favorite_venues')
-            .select('id')
-            .eq('user_id', user.id)
-            .eq('venue_id', venue.id)
-            .single();
-        if (fv) initialIsFavorite = true;
-    }
-
     // Fetch events happening at this venue
     const today = new Date().toISOString().split('T')[0];
     const { data: rawEvents } = await supabase
@@ -137,7 +126,7 @@ export default async function VenueDetailPage({ params }: { params: Promise<{ sl
                     </div>
 
                     <div style={{ marginTop: '1.5rem', alignSelf: 'flex-start', minWidth: '250px' }}>
-                        <FavoriteButton type="venue" itemId={venue.id} variant="inline" initialIsFavorite={initialIsFavorite} />
+                        <FavoriteButton type="venue" itemId={venue.id} variant="inline" />
                     </div>
                 </div>
             </div>

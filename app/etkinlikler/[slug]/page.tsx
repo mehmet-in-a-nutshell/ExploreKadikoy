@@ -59,17 +59,6 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
         notFound();
     }
 
-    let initialIsFavorite = false;
-    if (user) {
-        const { data: fv } = await supabaseServer
-            .from('user_favorite_events')
-            .select('id')
-            .eq('user_id', user.id)
-            .eq('event_id', event.id)
-            .single();
-        if (fv) initialIsFavorite = true;
-    }
-
     // Check if this is a recurring event by searching for future events with the exact same title
     const { data: futureOccurrences } = await supabase
         .from('events')
@@ -143,7 +132,7 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                         </div>
                     )}
 
-                    <FavoriteButton type="event" itemId={event.id} variant="inline" initialIsFavorite={initialIsFavorite} />
+                    <FavoriteButton type="event" itemId={event.id} variant="inline" />
 
                     <AddToCalendar event={{
                         title: event.title,

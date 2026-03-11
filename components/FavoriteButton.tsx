@@ -1,8 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { createClient } from '../utils/supabase/client';
 import { useRouter } from 'next/navigation';
+import { useFavorites } from '../contexts/FavoritesContext';
 
 interface FavoriteButtonProps {
     type: 'event' | 'venue';
@@ -11,78 +10,30 @@ interface FavoriteButtonProps {
     variant?: 'floating' | 'inline';
 }
 
-export default function FavoriteButton({ type, itemId, initialIsFavorite, variant = 'floating' }: FavoriteButtonProps) {
-    const [isFavorite, setIsFavorite] = useState(initialIsFavorite || false);
-    const [loading, setLoading] = useState(initialIsFavorite === undefined);
-    const [user, setUser] = useState<any>(null);
+export default function FavoriteButton({ type, itemId, variant = 'floating' }: FavoriteButtonProps) {
+    const { eventFavorites, venueFavorites, toggleEventFavorite, toggleVenueFavorite, isLoading, user } = useFavorites();
     const router = useRouter();
-    const supabase = createClient();
 
-    const tableName = type === 'event' ? 'user_favorite_events' : 'user_favorite_venues';
-    const columnIdName = type === 'event' ? 'event_id' : 'venue_id';
-
-    useEffect(() => {
-        if (initialIsFavorite !== undefined) return; // Skip fetch if provided server-side
-
-        async function checkFavoriteStatus() {
-            const { data: { user } } = await supabase.auth.getUser();
-            setUser(user);
-
-            if (user) {
-                const { data } = await supabase
-                    .from(tableName)
-                    .select('*')
-                    .eq('user_id', user.id)
-                    .eq(columnIdName, itemId)
-                    .single();
-
-                if (data) {
-                    setIsFavorite(true);
-                }
-            }
-            setLoading(false);
-        }
-
-        checkFavoriteStatus();
-    }, [itemId, tableName, columnIdName, supabase, initialIsFavorite]);
+    const isFavorite = type === 'event' ? eventFavorites.has(itemId) : venueFavorites.has(itemId);
 
     const toggleFavorite = async (e: React.MouseEvent) => {
         e.preventDefault(); // Prevent navigating if this button is inside a Link card
 
-        const { data: { user: currentUser } } = await supabase.auth.getUser();
-
-        if (!currentUser) {
+        if (!user) {
             alert('Favorilere eklemek için giriş yapmalısınız.');
             router.push('/login');
             return;
         }
 
-        const prevStatus = isFavorite;
-        setIsFavorite(!isFavorite); // Optimistic UI update
-
-        try {
-            if (prevStatus) {
-                // Remove favorite
-                await supabase
-                    .from(tableName)
-                    .delete()
-                    .eq('user_id', currentUser.id)
-                    .eq(columnIdName, itemId);
-            } else {
-                // Add favorite
-                await supabase
-                    .from(tableName)
-                    .insert([{ user_id: currentUser.id, [columnIdName]: itemId }]);
-            }
-        } catch (error) {
-            console.error('Favorite toggle error:', error);
-            setIsFavorite(prevStatus); // Revert on failure
-            alert('Bir hata oluştu. Lütfen tekrar deneyin.');
+        if (type === 'event') {
+            await toggleEventFavorite(itemId, user);
+        } else {
+            await toggleVenueFavorite(itemId, user);
         }
     };
 
-    if (loading) {
-        return <div style={{ width: '32px', height: '32px' }} />; // placeholder
+    if (isLoading && !user) {
+        return <div style={{ width: '32px', height: '32px', opacity: 0 }} />; // placeholder while checking auth
     }
 
     if (variant === 'inline') {

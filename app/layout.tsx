@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import { GoogleAnalytics } from '@next/third-parties/google';
+import { FavoritesProvider } from "../contexts/FavoritesContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -40,11 +41,13 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <body style={{ overflowX: 'hidden', width: '100%', maxWidth: '100vw' }}>
-        <Header />
-        <div style={{ overflowX: 'hidden', width: '100%', maxWidth: '100vw', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-          {children}
-        </div>
-        <Footer />
+        <FavoritesProvider>
+          <Header />
+          <div style={{ overflowX: 'hidden', width: '100%', maxWidth: '100vw', display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
+            {children}
+          </div>
+          <Footer />
+        </FavoritesProvider>
         <GoogleAnalytics gaId="G-9EDGTLNWZX" />
       </body>
     </html>
