@@ -49,7 +49,9 @@ export default function FavoriteButton({ type, itemId, initialIsFavorite, varian
     const toggleFavorite = async (e: React.MouseEvent) => {
         e.preventDefault(); // Prevent navigating if this button is inside a Link card
 
-        if (!user) {
+        const { data: { user: currentUser } } = await supabase.auth.getUser();
+
+        if (!currentUser) {
             alert('Favorilere eklemek için giriş yapmalısınız.');
             router.push('/login');
             return;
@@ -64,13 +66,13 @@ export default function FavoriteButton({ type, itemId, initialIsFavorite, varian
                 await supabase
                     .from(tableName)
                     .delete()
-                    .eq('user_id', user.id)
+                    .eq('user_id', currentUser.id)
                     .eq(columnIdName, itemId);
             } else {
                 // Add favorite
                 await supabase
                     .from(tableName)
-                    .insert([{ user_id: user.id, [columnIdName]: itemId }]);
+                    .insert([{ user_id: currentUser.id, [columnIdName]: itemId }]);
             }
         } catch (error) {
             console.error('Favorite toggle error:', error);
