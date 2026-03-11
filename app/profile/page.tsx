@@ -135,18 +135,9 @@ export default async function ProfilePage() {
                         </section>
                     </div>
 
-                    {/* Logout Button at the bottom */}
                     <div style={{ marginTop: '4rem', textAlign: 'center', borderTop: '1px solid #27272a', paddingTop: '3rem' }}>
                         <form action="/auth/logout" method="post">
-                            <button type="submit" style={{ padding: '0.75rem 2rem', backgroundColor: 'transparent', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 'bold', transition: 'all 0.2s', fontSize: '1rem' }}
-                                onMouseOver={(e) => {
-                                    e.currentTarget.style.backgroundColor = '#ef4444';
-                                    e.currentTarget.style.color = 'white';
-                                }}
-                                onMouseOut={(e) => {
-                                    e.currentTarget.style.backgroundColor = 'transparent';
-                                    e.currentTarget.style.color = '#ef4444';
-                                }}>
+                            <button className="logout-button" type="submit" style={{ padding: '0.75rem 2rem', backgroundColor: 'transparent', color: '#ef4444', border: '1px solid #ef4444', borderRadius: '0.5rem', cursor: 'pointer', fontWeight: 'bold', transition: 'all 0.2s', fontSize: '1rem' }}>
                                 Güvenli Çıkış Yap
                             </button>
                         </form>
