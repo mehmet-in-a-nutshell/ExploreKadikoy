@@ -5,6 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import AddToCalendar from '../../../components/AddToCalendar';
 import { format, parseISO } from 'date-fns';
 import { tr } from 'date-fns/locale';
 import { Metadata } from 'next';
@@ -129,6 +130,14 @@ export default async function EventDetailPage({ params }: { params: Promise<{ sl
                             {event.venues.neighborhood && <span style={{ color: '#a1a1aa' }}>({event.venues.neighborhood})</span>}
                         </div>
                     )}
+
+                    <AddToCalendar event={{
+                        title: event.title,
+                        date: event.date,
+                        time: event.time,
+                        venueName: event.venues?.name,
+                        slug: event.slug
+                    }} />
                 </div>
             </div>
 
