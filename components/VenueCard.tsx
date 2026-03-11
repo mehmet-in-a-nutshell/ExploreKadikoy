@@ -13,6 +13,7 @@ export interface VenueCardProps {
     rating?: number;
     venue_type?: string;
     compact?: boolean;
+    initialIsFavorite?: boolean;
 }
 
 export default function VenueCard({
@@ -25,6 +26,7 @@ export default function VenueCard({
     rating,
     venue_type,
     compact = false,
+    initialIsFavorite,
 }: VenueCardProps) {
     return (
         <div style={{ position: 'relative', width: '100%', height: '100%' }}>
@@ -58,7 +60,7 @@ export default function VenueCard({
                     )}
                 </div>
             </Link>
-            <FavoriteButton type="venue" itemId={id} />
+            <FavoriteButton type="venue" itemId={id} initialIsFavorite={initialIsFavorite} />
         </div>
     );
 }

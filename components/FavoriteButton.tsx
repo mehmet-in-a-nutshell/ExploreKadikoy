@@ -7,11 +7,12 @@ import { useRouter } from 'next/navigation';
 interface FavoriteButtonProps {
     type: 'event' | 'venue';
     itemId: string;
+    initialIsFavorite?: boolean;
 }
 
-export default function FavoriteButton({ type, itemId }: FavoriteButtonProps) {
-    const [isFavorite, setIsFavorite] = useState(false);
-    const [loading, setLoading] = useState(true);
+export default function FavoriteButton({ type, itemId, initialIsFavorite }: FavoriteButtonProps) {
+    const [isFavorite, setIsFavorite] = useState(initialIsFavorite || false);
+    const [loading, setLoading] = useState(initialIsFavorite === undefined);
     const [user, setUser] = useState<any>(null);
     const router = useRouter();
     const supabase = createClient();
@@ -20,6 +21,8 @@ export default function FavoriteButton({ type, itemId }: FavoriteButtonProps) {
     const columnIdName = type === 'event' ? 'event_id' : 'venue_id';
 
     useEffect(() => {
+        if (initialIsFavorite !== undefined) return; // Skip fetch if provided server-side
+
         async function checkFavoriteStatus() {
             const { data: { user } } = await supabase.auth.getUser();
             setUser(user);
@@ -40,7 +43,7 @@ export default function FavoriteButton({ type, itemId }: FavoriteButtonProps) {
         }
 
         checkFavoriteStatus();
-    }, [itemId, tableName, columnIdName, supabase]);
+    }, [itemId, tableName, columnIdName, supabase, initialIsFavorite]);
 
     const toggleFavorite = async (e: React.MouseEvent) => {
         e.preventDefault(); // Prevent navigating if this button is inside a Link card

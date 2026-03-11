@@ -15,6 +15,7 @@ export interface EventCardProps {
     isRecurring?: boolean;
     imageUrl?: string;
     slug: string;
+    initialIsFavorite?: boolean;
 }
 
 export default function EventCard({
@@ -29,6 +30,7 @@ export default function EventCard({
     isRecurring = false,
     imageUrl,
     slug,
+    initialIsFavorite,
 }: EventCardProps) {
     return (
         <div style={{ position: 'relative' }}>
@@ -67,7 +69,7 @@ export default function EventCard({
                     </div>
                 </div>
             </Link>
-            <FavoriteButton type="event" itemId={id} />
+            <FavoriteButton type="event" itemId={id} initialIsFavorite={initialIsFavorite} />
         </div>
     );
 }

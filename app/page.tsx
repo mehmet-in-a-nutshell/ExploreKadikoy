@@ -6,6 +6,7 @@ import SearchBar from '../components/SearchBar';
 import Link from 'next/link';
 
 import { supabase } from '../utils/supabase';
+import { createClient } from '../utils/supabase/server';
 import { format } from 'date-fns';
 import { filterDistinctEvents } from '../utils/eventFilter';
 
@@ -13,6 +14,9 @@ export const revalidate = 60; // Refresh cache every 60 seconds
 
 export default async function Home() {
   const today = format(new Date(), 'yyyy-MM-dd');
+
+  const supabaseServer = await createClient();
+  const { data: { user } } = await supabaseServer.auth.getUser();
 
   const [eventsResult, venuesResult, guidesResult] = await Promise.all([
     supabase.from('events').select(`
@@ -31,6 +35,19 @@ export default async function Home() {
 
   const distinctRawEvents = filterDistinctEvents(rawEvents || []);
 
+  let likedEventIds = new Set<string>();
+  let likedVenueIds = new Set<string>();
+
+  if (user) {
+    const [eventsLikesResult, venuesLikesResult] = await Promise.all([
+      supabaseServer.from('user_favorite_events').select('event_id').eq('user_id', user.id),
+      supabaseServer.from('user_favorite_venues').select('venue_id').eq('user_id', user.id)
+    ]);
+
+    if (eventsLikesResult.data) eventsLikesResult.data.forEach(like => likedEventIds.add(like.event_id));
+    if (venuesLikesResult.data) venuesLikesResult.data.forEach(like => likedVenueIds.add(like.venue_id));
+  }
+
   const featuredEvents = distinctRawEvents.slice(0, 6).map((e: any) => ({
     id: e.id,
     title: e.title,
@@ -42,7 +59,8 @@ export default async function Home() {
     imageUrl: e.cover_image,
     venue: e.venues?.name || 'Kadıköy',
     eventType: e.event_type || 'Genel',
-    eventSubtype: e.event_subtype || ''
+    eventSubtype: e.event_subtype || '',
+    initialIsFavorite: likedEventIds.has(e.id)
   }));
 
   const topVenues = (rawVenues || []).map((v: any) => ({
@@ -53,7 +71,8 @@ export default async function Home() {
     slug: v.slug,
     imageUrl: v.cover_image,
     rating: v.rating,
-    venue_type: v.venue_type
+    venue_type: v.venue_type,
+    initialIsFavorite: likedVenueIds.has(v.id)
   }));
 
   const featuredGuides = (rawGuides || []).map((g: any) => ({
