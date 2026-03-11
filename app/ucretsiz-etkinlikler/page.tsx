@@ -8,17 +8,19 @@ export const metadata = {
 
 import { supabase } from '../../utils/supabase';
 import { filterDistinctEvents } from '../../utils/eventFilter';
-import { format, subMonths } from 'date-fns';
+import { format, subMonths, addDays } from 'date-fns';
 
 export const revalidate = 60; // Refresh cache every 60 seconds
 
 export default async function UcretsizPage() {
     const today = format(new Date(), 'yyyy-MM-dd');
     const oneMonthAgo = format(subMonths(new Date(), 1), 'yyyy-MM-dd');
+    const twoWeeksLater = format(addDays(new Date(), 14), 'yyyy-MM-dd');
+
     const { data: rawEvents } = await supabase.from('events').select(`
         id, title, slug, date, time, is_free, cover_image, description, event_type, event_subtype,
         venues:venue_id (name)
-    `).eq('is_free', true).gte('date', oneMonthAgo).order('created_at', { ascending: false });
+    `).eq('is_free', true).gte('date', oneMonthAgo).order('date', { ascending: true }).order('time', { ascending: true });
 
     const allCategoryEvents = (rawEvents || []).map((e: any) => ({
         id: e.id,
@@ -35,7 +37,7 @@ export default async function UcretsizPage() {
     }));
 
 
-    const events = filterDistinctEvents(allCategoryEvents.filter((e: any) => e.date >= today));
+    const events = filterDistinctEvents(allCategoryEvents.filter((e: any) => e.date >= today && e.date <= twoWeeksLater));
     const pastEvents = filterDistinctEvents(allCategoryEvents.filter((e: any) => e.date < today)).sort((a: any, b: any) => b.date.localeCompare(a.date));
 
     return (
@@ -49,7 +51,7 @@ export default async function UcretsizPage() {
 
             <section className={styles.results}>
                 <div className={styles.resultsInfo}>
-                    <p><span>{events.length} ücretsiz etkinlik</span> bulundu</p>
+                    <p>Önümüzdeki iki hafta içinde <span>{events.length} ücretsiz etkinlik</span> bulundu</p>
                 </div>
 
                 <div className={styles.grid}>
