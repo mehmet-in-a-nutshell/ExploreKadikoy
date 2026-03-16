@@ -1,5 +1,4 @@
 import { createClient } from '../../utils/supabase/server';
-import { filterDistinctEvents } from '../../utils/eventFilter';
 
 export const revalidate = 0; // Always fetch fresh data in admin dashboard
 
@@ -27,40 +26,27 @@ export default async function AdminDashboard() {
         .select('*', { count: 'exact', head: true })
         .gte('rating', 4.0);
 
-    // Fetch all events for distinct stats
-    const { data: allEventsRaw } = await supabase
-        .from('events')
+    // Fetch venues with events to count them
+    const { data: venuesWithEvents } = await supabase
+        .from('venues')
         .select(`
-            id, title, date, event_type,
-            venues (name)
+            name,
+            events ( id )
         `);
 
-    const formattedEvents = (allEventsRaw || []).map((e: any) => ({
-        id: e.id,
-        title: e.title,
-        date: e.date,
-        venue: e.venues?.name || 'Bilinmiyor',
-        eventType: e.event_type || 'Belirtilmemiş'
-    }));
-
-    const distinctEvents = filterDistinctEvents(formattedEvents);
-
-    // Group distinct events by venue
-    const venueCounts = distinctEvents.reduce((acc: any, curr: any) => {
-        if (curr.venue !== 'Bilinmiyor') {
-            acc[curr.venue] = (acc[curr.venue] || 0) + 1;
-        }
-        return acc;
-    }, {});
-
-    const venueStats = Object.entries(venueCounts)
-        .map(([name, count]) => ({ name, count: count as number }))
+    const venueStats = (venuesWithEvents || [])
+        .map((v: any) => ({ name: v.name, count: v.events ? v.events.length : 0 }))
         .sort((a, b) => b.count - a.count)
         .slice(0, 10);
 
-    // Group distinct events by type
-    const typeCounts = distinctEvents.reduce((acc: any, curr: any) => {
-        acc[curr.eventType] = (acc[curr.eventType] || 0) + 1;
+    // Fetch all events to group by event_type
+    const { data: eventsData } = await supabase
+        .from('events')
+        .select('event_type');
+
+    const typeCounts = (eventsData || []).reduce((acc: any, curr: any) => {
+        const type = curr.event_type || 'Belirtilmemiş';
+        acc[type] = (acc[type] || 0) + 1;
         return acc;
     }, {});
 
@@ -77,8 +63,8 @@ export default async function AdminDashboard() {
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1.5rem' }}>
                 {/* Quick Stats Cards */}
                 <div style={{ backgroundColor: '#18181b', padding: '1.5rem', borderRadius: '0.75rem', border: '1px solid #27272a' }}>
-                    <h3 style={{ color: '#e4e4e7', marginBottom: '0.5rem' }}>Tekil Etkinlik (Distinct)</h3>
-                    <p style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>{distinctEvents.length}</p>
+                    <h3 style={{ color: '#e4e4e7', marginBottom: '0.5rem' }}>Toplam Etkinlik</h3>
+                    <p style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>{eventsCount || 0}</p>
                 </div>
                 <div style={{ backgroundColor: '#18181b', padding: '1.5rem', borderRadius: '0.75rem', border: '1px solid #27272a' }}>
                     <h3 style={{ color: '#e4e4e7', marginBottom: '0.5rem' }}>Kayıtlı Mekan</h3>
