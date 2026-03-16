@@ -26,6 +26,35 @@ export default async function AdminDashboard() {
         .select('*', { count: 'exact', head: true })
         .gte('rating', 4.0);
 
+    // Fetch venues with events to count them
+    const { data: venuesWithEvents } = await supabase
+        .from('venues')
+        .select(`
+            name,
+            events ( id )
+        `);
+
+    const venueStats = (venuesWithEvents || [])
+        .map((v: any) => ({ name: v.name, count: v.events ? v.events.length : 0 }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10);
+
+    // Fetch all events to group by event_type
+    const { data: eventsData } = await supabase
+        .from('events')
+        .select('event_type');
+
+    const typeCounts = (eventsData || []).reduce((acc: any, curr: any) => {
+        const type = curr.event_type || 'Belirtilmemiş';
+        acc[type] = (acc[type] || 0) + 1;
+        return acc;
+    }, {});
+
+    const eventTypeStats = Object.entries(typeCounts)
+        .map(([name, count]) => ({ name, count: count as number }))
+        .sort((a, b) => b.count - a.count)
+        .slice(0, 10);
+
     return (
         <div>
             <h1 style={{ fontSize: '2rem', fontWeight: 'bold', marginBottom: '1rem', color: 'white' }}>ExploreKadikoy Yönetim Paneli</h1>
@@ -50,6 +79,52 @@ export default async function AdminDashboard() {
                     <p style={{ fontSize: '2rem', fontWeight: 'bold', color: 'white' }}>{topVenuesCount || 0}</p>
                 </div>
             </div>
+
+            {/* Detailed Statistics Section */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '2rem', marginTop: '3rem' }}>
+
+                {/* Top Venues by Event Count */}
+                <div style={{ backgroundColor: '#18181b', padding: '1.5rem', borderRadius: '0.75rem', border: '1px solid #27272a' }}>
+                    <h3 style={{ color: 'white', marginBottom: '1.5rem', fontSize: '1.25rem', fontWeight: 'bold' }}>
+                        En Çok Etkinlik Düzenleyen 10 Mekan
+                    </h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {venueStats.map((venue, index) => (
+                            <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '0.75rem', borderBottom: index !== venueStats.length - 1 ? '1px solid #27272a' : 'none' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                    <span style={{ color: '#a1a1aa', fontWeight: 'bold', width: '20px' }}>{index + 1}.</span>
+                                    <span style={{ color: '#e4e4e7' }}>{venue.name}</span>
+                                </div>
+                                <span style={{ backgroundColor: '#27272a', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem', color: '#fbbf24', fontWeight: 'bold' }}>
+                                    {venue.count} Etkinlik
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Top Event Types */}
+                <div style={{ backgroundColor: '#18181b', padding: '1.5rem', borderRadius: '0.75rem', border: '1px solid #27272a' }}>
+                    <h3 style={{ color: 'white', marginBottom: '1.5rem', fontSize: '1.25rem', fontWeight: 'bold' }}>
+                        Etkinlik Tiplerine Göre Dağılım (İlk 10)
+                    </h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                        {eventTypeStats.map((stat, index) => (
+                            <div key={index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '0.75rem', borderBottom: index !== eventTypeStats.length - 1 ? '1px solid #27272a' : 'none' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                    <span style={{ color: '#a1a1aa', fontWeight: 'bold', width: '20px' }}>{index + 1}.</span>
+                                    <span style={{ color: '#e4e4e7' }}>{stat.name}</span>
+                                </div>
+                                <span style={{ backgroundColor: '#27272a', padding: '0.25rem 0.75rem', borderRadius: '9999px', fontSize: '0.875rem', color: '#6366f1', fontWeight: 'bold' }}>
+                                    {stat.count}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+            </div>
+
         </div>
     );
 }
